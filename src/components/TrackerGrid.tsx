@@ -1,5 +1,8 @@
 import { useState } from 'react';
 import DatePicker from './DatePicker';
+import { Habit, HabitRecord } from '../types';
+import { mockHabitRecords, mockHabits } from '../utils/mockData';
+import CreateHabitForm from './forms/CreateHabitForm';
 
 const getDaysInMonth = (year: number, month: number) => {
   const daysInMonth = new Date(year, month + 1, 0).getDate();
@@ -15,6 +18,62 @@ const getDaysInMonth = (year: number, month: number) => {
 };
 
 const TrackerGrid = () => {
+  //Using mock data for now
+  const [habits, setHabits] = useState<Habit[]>(mockHabits);
+  const [habitRecords, setHabitRecords] =
+    useState<HabitRecord[]>(mockHabitRecords);
+
+  const addNewHabit = (name: string, description: string) => {
+    const newHabit: Habit = {
+      habit_id: (habits.length + 1).toString(),
+      user_id: 'user123',
+      name,
+      description,
+      total_completions: 0,
+      created_at: new Date(),
+    };
+    setHabits([...habits, newHabit]);
+  };
+
+  const toggleHabitRecord = (habitId: string, date: Date) => {
+    const recordIndex = habitRecords.findIndex(
+      (rec) =>
+        rec.habit_id === habitId &&
+        rec.date.toDateString() === date.toDateString()
+    );
+
+    if (recordIndex !== -1) {
+      // Toggle existing record
+      const updatedRecords = [...habitRecords];
+      updatedRecords[recordIndex].is_completed =
+        !updatedRecords[recordIndex].is_completed;
+
+      setHabitRecords(updatedRecords);
+    } else {
+      // Create new record
+      const newRecord: HabitRecord = {
+        record_id: habitRecords.length + 1,
+        habit_id: habitId,
+        date,
+        is_completed: true,
+      };
+
+      setHabitRecords([...habitRecords, newRecord]);
+    }
+  };
+
+  const getButtonText = (habitId: string, date: Date) => {
+    const record = habitRecords.find(
+      (rec) =>
+        rec.habit_id === habitId &&
+        rec.date.toDateString() === date.toDateString()
+    );
+
+    return record?.is_completed ? 'x' : '-';
+  };
+
+  const [isHabitFormOpen, setIsHabitFormOpen] = useState(false);
+
   const currentDate = {
     day: new Date().getDate(),
     month: new Date().getMonth() + 1,
@@ -96,15 +155,53 @@ const TrackerGrid = () => {
             </tr>
           </thead>
           <tbody>
+            {/* Mock Habit rows*/}
+            {habits.map((habit) => (
+              <tr key={habit.habit_id}>
+                <td className='border'>{habit.name}</td>
+                {daysArray.map((day) => {
+                  const recordDate = new Date(
+                    selectedYear,
+                    selectedMonth,
+                    day.dayNum
+                  );
+
+                  return (
+                    <td
+                      key={`record-${habit.habit_id}-${day.dayNum}`}
+                      className='border'
+                    >
+                      <button
+                        onClick={() =>
+                          toggleHabitRecord(habit.habit_id, recordDate)
+                        }
+                      >
+                        {getButtonText(habit.habit_id, recordDate)}
+                      </button>
+                    </td>
+                  );
+                })}
+                <td className='border text-center'>goal: 0</td>
+                <td className='border text-center'>achieved: 0</td>
+              </tr>
+            ))}
             <tr>
               <td colSpan={daysArray.length + 3} className='border'>
-                <button className='bg-slate-100 py-4 w-full text-center font-semibold'>
+                <button
+                  className='bg-slate-100 py-4 w-full text-center font-semibold'
+                  onClick={() => setIsHabitFormOpen(true)}
+                >
                   Click here to get started and create a new habit!
                 </button>
               </td>
             </tr>
           </tbody>
         </table>
+        <CreateHabitForm
+          onSubmit={addNewHabit}
+          onClose={() => setIsHabitFormOpen(false)}
+          isVisible={isHabitFormOpen}
+        />
       </div>
     </div>
   );
