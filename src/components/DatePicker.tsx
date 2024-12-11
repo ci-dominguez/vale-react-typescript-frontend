@@ -1,28 +1,28 @@
 interface DatePickerProps {
-  currentMonth: number;
-  currentYear: number;
-  setCurrentMonth: (month: number) => void;
-  setCurrentYear: (year: number) => void;
+  selectedMonth: number;
+  selectedYear: number;
+  setSelectedMonth: (month: number) => void;
+  setSelectedYear: (year: number) => void;
 }
 
 const DatePicker = ({
-  currentMonth,
-  currentYear,
-  setCurrentMonth,
-  setCurrentYear,
+  selectedMonth,
+  selectedYear,
+  setSelectedMonth,
+  setSelectedYear,
 }: DatePickerProps) => {
   const handleDateChange = (direction: 'prev' | 'next') => {
     if (direction === 'prev') {
-      setCurrentMonth(currentMonth - 1);
-      if (currentMonth === 0) {
-        setCurrentYear(currentYear - 1);
-        setCurrentMonth(11);
+      setSelectedMonth(selectedMonth - 1);
+      if (selectedMonth === 0) {
+        setSelectedYear(selectedYear - 1);
+        setSelectedMonth(11);
       }
     } else if (direction === 'next') {
-      setCurrentMonth(currentMonth + 1);
-      if (currentMonth === 11) {
-        setCurrentYear(currentYear + 1);
-        setCurrentMonth(0);
+      setSelectedMonth(selectedMonth + 1);
+      if (selectedMonth === 11) {
+        setSelectedYear(selectedYear + 1);
+        setSelectedMonth(0);
       }
     }
   };
@@ -36,10 +36,10 @@ const DatePicker = ({
         Prev
       </button>
       <span className='flex items-center p-2'>
-        {new Date(currentYear, currentMonth).toLocaleDateString('default', {
+        {new Date(selectedYear, selectedMonth).toLocaleDateString('default', {
           month: 'long',
         })}
-        , {currentYear}
+        , {selectedYear}
       </span>
       <button
         className='bg-purple-300 p-2'
