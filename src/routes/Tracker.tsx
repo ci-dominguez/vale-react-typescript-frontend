@@ -1,12 +1,13 @@
 import TrackerGrid from '../components/TrackerGrid';
+import MainLayout from '../layouts/MainLayout';
 
 const TrackerPage = () => {
   return (
-    <div>
+    <MainLayout>
       <h1>Tracker Page</h1>
 
       <TrackerGrid />
-    </div>
+    </MainLayout>
   );
 };
 
