@@ -1,9 +1,4 @@
-import {
-  SignedIn,
-  SignedOut,
-  SignInButton,
-  UserButton,
-} from '@clerk/clerk-react';
+import { SignedIn, SignedOut } from '@clerk/clerk-react';
 import { Link } from 'react-router';
 
 const Nav = () => {
@@ -12,10 +7,11 @@ const Nav = () => {
       <Link to='/'>Home</Link>
       <Link to='/tracker'>Tracker</Link>
       <SignedOut>
-        <SignInButton />
+        <Link to='/sign-in'>Login</Link>
+        <Link to='/sign-up'>Get Started</Link>
       </SignedOut>
       <SignedIn>
-        <UserButton />
+        <>Youre signed in!</>
       </SignedIn>
     </nav>
   );
