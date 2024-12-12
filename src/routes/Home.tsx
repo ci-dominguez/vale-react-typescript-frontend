@@ -1,5 +1,7 @@
+import MainLayout from '../layouts/MainLayout';
+
 const HomePage = () => {
-  return <div>Hello Home!</div>;
+  return <MainLayout>Hello Home!</MainLayout>;
 };
 
 export default HomePage;
