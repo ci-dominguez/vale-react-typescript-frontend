@@ -1,8 +1,9 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { useAuth } from '@clerk/clerk-react';
+import axios from '../api/axios';
 import DatePicker from './DatePicker';
-import { Habit, HabitRecord } from '../types';
-import { mockHabitRecords, mockHabits } from '../utils/mockData';
 import CreateHabitForm from './forms/CreateHabitForm';
+import { Habit, HabitRecord } from '../types';
 
 const getDaysInMonth = (year: number, month: number) => {
   const daysInMonth = new Date(year, month + 1, 0).getDate();
@@ -18,10 +19,49 @@ const getDaysInMonth = (year: number, month: number) => {
 };
 
 const TrackerGrid = () => {
-  //Using mock data for now
-  const [habits, setHabits] = useState<Habit[]>(mockHabits);
-  const [habitRecords, setHabitRecords] =
-    useState<HabitRecord[]>(mockHabitRecords);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [habits, setHabits] = useState<Habit[]>([]);
+  const [habitRecords, setHabitRecords] = useState<HabitRecord[]>([]);
+
+  const { getToken } = useAuth();
+
+  const [isHabitFormOpen, setIsHabitFormOpen] = useState(false);
+
+  const currentDate = {
+    day: new Date().getDate(),
+    month: new Date().getMonth() + 1,
+    year: new Date().getFullYear(),
+  };
+  const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth());
+  const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
+  const daysArray = getDaysInMonth(selectedYear, selectedMonth);
+
+  useEffect(() => {
+    const fetchHabits = async () => {
+      try {
+        setIsLoading(true);
+        setError(null);
+
+        const token = await getToken();
+        console.log('JWT Token:', token);
+
+        const resp = await axios.get('/habits', {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        setHabits(resp.data);
+      } catch (error) {
+        setError(`Failed to fetch habits: ${error}`);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchHabits();
+  }, [selectedMonth, selectedYear, getToken]);
 
   const addNewHabit = (name: string, description: string) => {
     const newHabit: Habit = {
@@ -71,17 +111,6 @@ const TrackerGrid = () => {
 
     return record?.is_completed ? 'x' : '-';
   };
-
-  const [isHabitFormOpen, setIsHabitFormOpen] = useState(false);
-
-  const currentDate = {
-    day: new Date().getDate(),
-    month: new Date().getMonth() + 1,
-    year: new Date().getFullYear(),
-  };
-  const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth());
-  const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
-  const daysArray = getDaysInMonth(selectedYear, selectedMonth);
 
   return (
     <div className='flex flex-col items-center'>
@@ -155,7 +184,6 @@ const TrackerGrid = () => {
             </tr>
           </thead>
           <tbody>
-            {/* Mock Habit rows*/}
             {habits.map((habit) => (
               <tr key={habit.habit_id}>
                 <td className='border'>{habit.name}</td>
@@ -203,6 +231,18 @@ const TrackerGrid = () => {
           isVisible={isHabitFormOpen}
         />
       </div>
+      {isLoading && (
+        <div className='bg-green-400'>
+          {' '}
+          <p>Loading...</p>
+        </div>
+      )}
+      {error && (
+        <div className='bg-red-400'>
+          {' '}
+          <p>{error}</p>
+        </div>
+      )}
     </div>
   );
 };
