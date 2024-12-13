@@ -5,7 +5,7 @@ const Nav = () => {
   return (
     <nav className='flex gap-4'>
       <Link to='/'>Home</Link>
-      <Link to='/tracker'>Tracker</Link>
+      <Link to='/habit-tracker'>Tracker</Link>
       <SignedOut>
         <Link to='/sign-in'>Login</Link>
         <Link to='/sign-up'>Get Started</Link>
