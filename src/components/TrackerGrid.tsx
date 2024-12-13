@@ -3,7 +3,7 @@ import { useAuth } from '@clerk/clerk-react';
 import axios from '../api/axios';
 import DatePicker from './DatePicker';
 import CreateHabitForm from './forms/CreateHabitForm';
-import { Habit, HabitRecord } from '../types';
+import { Habit, HabitRecord } from '../utils/types';
 
 const getDaysInMonth = (year: number, month: number) => {
   const daysInMonth = new Date(year, month + 1, 0).getDate();
@@ -39,12 +39,10 @@ const TrackerGrid = () => {
 
   useEffect(() => {
     const fetchHabits = async () => {
+      setIsLoading(true);
+      setError(null);
       try {
-        setIsLoading(true);
-        setError(null);
-
         const token = await getToken();
-        console.log('JWT Token:', token);
 
         const resp = await axios.get('/habits', {
           headers: {
@@ -62,18 +60,6 @@ const TrackerGrid = () => {
 
     fetchHabits();
   }, [selectedMonth, selectedYear, getToken]);
-
-  const addNewHabit = (name: string, description: string) => {
-    const newHabit: Habit = {
-      habit_id: (habits.length + 1).toString(),
-      user_id: 'user123',
-      name,
-      description,
-      total_completions: 0,
-      created_at: new Date(),
-    };
-    setHabits([...habits, newHabit]);
-  };
 
   const toggleHabitRecord = (habitId: string, date: Date) => {
     const recordIndex = habitRecords.findIndex(
@@ -226,7 +212,6 @@ const TrackerGrid = () => {
           </tbody>
         </table>
         <CreateHabitForm
-          onSubmit={addNewHabit}
           onClose={() => setIsHabitFormOpen(false)}
           isVisible={isHabitFormOpen}
         />
