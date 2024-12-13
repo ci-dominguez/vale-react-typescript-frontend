@@ -20,7 +20,7 @@ createRoot(document.getElementById('root')!).render(
       <BrowserRouter>
         <Routes>
           <Route path='/' element={<HomePage />} />
-          <Route path='/tracker' element={<Tracker />} />
+          <Route path='/habit-tracker' element={<Tracker />} />
           <Route path='/sign-in' element={<SignInPage />} />
           <Route path='/sign-up/*' element={<SignUpPage />} />
         </Routes>
