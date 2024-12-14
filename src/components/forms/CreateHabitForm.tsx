@@ -3,6 +3,7 @@ import { useAuth } from '@clerk/clerk-react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import api from '../../api/axios';
+import { Habit } from '../../utils/types';
 import {
   createHabitSchema,
   CreateHabitData,
@@ -10,10 +11,15 @@ import {
 
 interface CreateHabitFormProps {
   onClose: () => void;
+  onHabitCreated: (newHabit: Habit) => void;
   isVisible: boolean;
 }
 
-const CreateHabitForm = ({ onClose, isVisible }: CreateHabitFormProps) => {
+const CreateHabitForm = ({
+  onClose,
+  onHabitCreated,
+  isVisible,
+}: CreateHabitFormProps) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [submitSuccess, setSubmitSuccess] = useState(false);
@@ -42,7 +48,8 @@ const CreateHabitForm = ({ onClose, isVisible }: CreateHabitFormProps) => {
       });
       console.log(resp.data);
 
-      // check if resp is not ok
+      const newHabit: Habit = resp.data;
+      onHabitCreated(newHabit);
 
       setSubmitSuccess(true);
       reset();
