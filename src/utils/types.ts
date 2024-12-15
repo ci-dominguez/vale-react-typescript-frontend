@@ -18,6 +18,6 @@ export interface Habit {
 export interface HabitRecord {
   record_id: number;
   habit_id: string;
-  date: Date;
+  date: string;
   is_completed: boolean;
 }
