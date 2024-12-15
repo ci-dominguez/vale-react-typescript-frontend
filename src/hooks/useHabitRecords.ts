@@ -17,7 +17,7 @@ const useHabitRecords = (
   useEffect(() => {
     if (habits.length > 0)
       fetchHabitRecords(habits, selectedMonth, selectedYear);
-  }, [habits, selectedMonth, selectedYear, getToken]);
+  }, [habits, selectedMonth, selectedYear]);
 
   const fetchHabitRecords = async (
     habits: Habit[],
@@ -44,11 +44,86 @@ const useHabitRecords = (
         }
       );
 
-      setHabitRecords(resp.data);
+      const clientRecordsArr: HabitRecord[] = resp.data.map(
+        (record: HabitRecord) => {
+          return {
+            habit_id: record.habit_id,
+            record_id: record.record_id,
+            date: new Date(record.date).toISOString().split('T')[0],
+            is_completed: record.is_completed,
+          };
+        }
+      );
+
+      // console.log('clientRecordsArr', clientRecordsArr);
+
+      setHabitRecords(clientRecordsArr);
     } catch (error) {
       setRecordsError(`Failed to fetch habit records: ${error}`);
     } finally {
       setAreRecordsLoading(false);
+    }
+  };
+
+  const updateHabitRecord = async (habitID: string, date: string) => {
+    // Immediately update the record locally
+    setHabitRecords((prevRecords) => {
+      const updatedRecords = prevRecords.map((record) =>
+        record.habit_id === habitID && record.date === date
+          ? { ...record, is_completed: !record.is_completed }
+          : record
+      );
+
+      // Check if record exists, if not add it as a new record
+      const recordExists = updatedRecords.some(
+        (record) => record.habit_id === habitID && record.date === date
+      );
+
+      if (!recordExists) {
+        updatedRecords.push({
+          habit_id: habitID,
+          record_id: Math.random(),
+          date,
+          is_completed: true,
+        });
+      }
+
+      return updatedRecords;
+    });
+
+    try {
+      const token = await getToken();
+
+      const resp = await axios.patch(
+        `/habit-records?habit=${habitID}&date=${date}`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      // Update record in database
+      setHabitRecords((prevRecords) =>
+        prevRecords.map((record) =>
+          record.habit_id === habitID && record.date === date
+            ? { ...record, is_completed: resp.data.is_completed }
+            : record
+        )
+      );
+    } catch (error) {
+      console.error('Failed to update habit record:', error);
+      setRecordsError(`Failed to update habit record: ${error}`);
+
+      // Revert local changes if database update fails
+      setHabitRecords((prevRecords) =>
+        prevRecords.map((record) =>
+          record.habit_id === habitID && record.date === date
+            ? { ...record, is_completed: !record.is_completed }
+            : record
+        )
+      );
     }
   };
 
@@ -58,6 +133,7 @@ const useHabitRecords = (
     recordsError,
     areRecordsLoading,
     fetchHabitRecords,
+    updateHabitRecord,
   };
 };
 

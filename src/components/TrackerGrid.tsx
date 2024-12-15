@@ -1,9 +1,9 @@
-import { useEffect, useState } from 'react';
-import { useAuth } from '@clerk/clerk-react';
-import axios from '../api/axios';
+import { useState } from 'react';
 import DatePicker from './DatePicker';
 import CreateHabitForm from './forms/CreateHabitForm';
-import { Habit, HabitRecord } from '../utils/types';
+import { Habit } from '../utils/types';
+import useHabits from '../hooks/useHabits';
+import useHabitRecords from '../hooks/useHabitRecords';
 
 const getDaysInMonth = (year: number, month: number) => {
   const daysInMonth = new Date(year, month + 1, 0).getDate();
@@ -19,13 +19,6 @@ const getDaysInMonth = (year: number, month: number) => {
 };
 
 const TrackerGrid = () => {
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [habits, setHabits] = useState<Habit[]>([]);
-  const [habitRecords, setHabitRecords] = useState<HabitRecord[]>([]);
-
-  const { getToken } = useAuth();
-
   const [isHabitFormOpen, setIsHabitFormOpen] = useState(false);
 
   const currentDate = {
@@ -33,66 +26,23 @@ const TrackerGrid = () => {
     month: new Date().getMonth() + 1,
     year: new Date().getFullYear(),
   };
+
   const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth());
   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
   const daysArray = getDaysInMonth(selectedYear, selectedMonth);
 
-  useEffect(() => {
-    const fetchHabits = async () => {
-      setIsLoading(true);
-      setError(null);
-      try {
-        const token = await getToken();
+  const { habits, setHabits, habitsError, areHabitsLoading } = useHabits();
+  const { habitRecords, recordsError, areRecordsLoading, updateHabitRecord } =
+    useHabitRecords(habits, selectedMonth, selectedYear);
 
-        const resp = await axios.get('/habits', {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-
-        setHabits(resp.data);
-      } catch (error) {
-        setError(`Failed to fetch habits: ${error}`);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchHabits();
-  }, [selectedMonth, selectedYear, getToken]);
-
-  const toggleHabitRecord = (habitId: string, date: Date) => {
-    const recordIndex = habitRecords.findIndex(
-      (rec) =>
-        rec.habit_id === habitId &&
-        rec.date.toDateString() === date.toDateString()
-    );
-
-    if (recordIndex !== -1) {
-      // Toggle existing record
-      const updatedRecords = [...habitRecords];
-      updatedRecords[recordIndex].is_completed =
-        !updatedRecords[recordIndex].is_completed;
-
-      setHabitRecords(updatedRecords);
-    } else {
-      // Create new record
-      const newRecord: HabitRecord = {
-        record_id: habitRecords.length + 1,
-        habit_id: habitId,
-        date,
-        is_completed: true,
-      };
-
-      setHabitRecords([...habitRecords, newRecord]);
-    }
+  const handleNewHabitCreated = (newHabit: Habit) => {
+    setIsHabitFormOpen(false);
+    setHabits((prevHabits) => [...prevHabits, newHabit]);
   };
 
-  const getButtonText = (habitId: string, date: Date) => {
+  const getButtonText = (habitId: string, date: string) => {
     const record = habitRecords.find(
-      (rec) =>
-        rec.habit_id === habitId &&
-        rec.date.toDateString() === date.toDateString()
+      (rec) => rec.habit_id === habitId && rec.date === date
     );
 
     return record?.is_completed ? 'x' : '-';
@@ -107,7 +57,7 @@ const TrackerGrid = () => {
         setSelectedYear={setSelectedYear}
       />
       <div className='overflow-x-none overflow-y-hidden w-full'>
-        <table className=' min-w-full table-fixed border-collapse border'>
+        <table className='min-w-full table-fixed border-collapse border'>
           <colgroup>
             <col className='w-20' />
             {daysArray.map((_, index) => (
@@ -178,7 +128,9 @@ const TrackerGrid = () => {
                     selectedYear,
                     selectedMonth,
                     day.dayNum
-                  );
+                  )
+                    .toISOString()
+                    .split('T')[0];
 
                   return (
                     <td
@@ -186,9 +138,17 @@ const TrackerGrid = () => {
                       className='border'
                     >
                       <button
-                        onClick={() =>
-                          toggleHabitRecord(habit.habit_id, recordDate)
-                        }
+                        onClick={() => {
+                          // console.log('record date:', recordDate);
+                          updateHabitRecord(habit.habit_id, recordDate);
+                        }}
+                        className={`size-full ${
+                          areRecordsLoading
+                            ? 'bg-blue-500'
+                            : recordsError
+                            ? 'bg-red-500'
+                            : 'bg-green-500'
+                        }`}
                       >
                         {getButtonText(habit.habit_id, recordDate)}
                       </button>
@@ -213,19 +173,21 @@ const TrackerGrid = () => {
         </table>
         <CreateHabitForm
           onClose={() => setIsHabitFormOpen(false)}
+          onHabitCreated={handleNewHabitCreated}
           isVisible={isHabitFormOpen}
         />
       </div>
-      {isLoading && (
+      {areHabitsLoading && (
         <div className='bg-green-400'>
           {' '}
           <p>Loading...</p>
         </div>
       )}
-      {error && (
+      {habitsError && (
         <div className='bg-red-400'>
           {' '}
-          <p>{error}</p>
+          <p>1. {habitsError}</p>
+          <p>2. {recordsError}</p>
         </div>
       )}
     </div>
