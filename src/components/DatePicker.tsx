@@ -1,3 +1,5 @@
+import { ChevronLeft, ChevronRight } from 'lucide-react';
+
 interface DatePickerProps {
   selectedMonth: number;
   selectedYear: number;
@@ -28,24 +30,24 @@ const DatePicker = ({
   };
 
   return (
-    <div className='flex bg-pink-300'>
+    <div className='flex items-center gap-4 py-14'>
       <button
-        className='bg-purple-300 p-2'
+        className='p-2 bg-eggshell hover:bg-parchment rounded-full'
         onClick={() => handleDateChange('prev')}
       >
-        Prev
+        <ChevronLeft className='size-4 stroke-charcoal' />
       </button>
-      <span className='flex items-center p-2'>
+      <h1 className='flex items-center font-editorial text-2xl md:text-3xl pt-2'>
         {new Date(selectedYear, selectedMonth).toLocaleDateString('default', {
           month: 'long',
         })}
         , {selectedYear}
-      </span>
+      </h1>
       <button
-        className='bg-purple-300 p-2'
+        className='p-2 bg-eggshell hover:bg-parchment rounded-full'
         onClick={() => handleDateChange('next')}
       >
-        Next
+        <ChevronRight className='size-4 stroke-charcoal' />
       </button>
     </div>
   );
