@@ -7,8 +7,8 @@ const Button = ({ children, variant = 'primary' }: ButtonProps) => {
   const baseClasses = 'rounded-full flex font-editorial text-lg';
 
   const variantStylesMap: Record<string, string> = {
-    primary: 'bg-charcoal text-white',
-    secondary: '',
+    primary: 'bg-charcoal text-white hover:bg-[#191919]',
+    secondary: 'bg-parchment text-charcoal',
   };
 
   const variantStyles =
