@@ -22,7 +22,9 @@ const Nav = () => {
 
           <Link
             to='/habit-tracker'
-            className='hidden md:flex text-xl font-editorial pt-2 hover:underline'
+            className={`hidden md:flex text-xl font-editorial pt-2 hover:underline ${
+              route === '/habit-tracker' && 'underline'
+            }`}
           >
             Habit Tracker
           </Link>
@@ -32,7 +34,9 @@ const Nav = () => {
           <SignedOut>
             <Link
               to='/sign-in'
-              className='text-2xl font-editorial hover:underline'
+              className={`text-2xl font-editorial hover:underline ${
+                route === '/sign-in' && 'underline'
+              }`}
             >
               Sign In
             </Link>
