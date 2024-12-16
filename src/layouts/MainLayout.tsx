@@ -8,7 +8,9 @@ const MainLayout = ({ children }: Props) => {
   return (
     <>
       <Nav />
-      <main className='min-h-screen px-4'>{children}</main>
+      <main className='min-h-screen px-4 bg-white text-charcoal'>
+        {children}
+      </main>
     </>
   );
 };
