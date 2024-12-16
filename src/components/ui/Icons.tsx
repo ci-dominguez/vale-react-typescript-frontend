@@ -1,8 +1,8 @@
-interface LogoProps {
+interface IconProps {
   className: string;
 }
 
-const Logo = ({ className }: LogoProps) => {
+const Logo = ({ className }: IconProps) => {
   return (
     <svg
       width='43'
@@ -23,6 +23,52 @@ const Logo = ({ className }: LogoProps) => {
           <rect width='43' height='43' fill='white' />
         </clipPath>
       </defs>
+    </svg>
+  );
+};
+
+export const Moon = ({ className }: IconProps) => {
+  return (
+    <svg
+      width='22'
+      height='22'
+      viewBox='0 0 22 22'
+      fill='none'
+      xmlns='http://www.w3.org/2000/svg'
+      className={className}
+    >
+      <path
+        d='M21 11.9361C19.62 14.3568 17.0153 15.9889 14.0294 15.9889C9.60114 15.9889 6.01131 12.3991 6.01131 7.97087C6.01131 4.98478 7.64367 2.37994 10.0647 1C4.97873 1.48223 1 5.76518 1 10.9774C1 16.5127 5.48728 21 11.0226 21C16.2346 21 20.5174 17.0217 21 11.9361Z'
+        // fill='#292A2D'
+        // stroke='#292A2D'
+        strokeLinecap='round'
+        strokeLinejoin='round'
+      />
+    </svg>
+  );
+};
+
+export const Sun = ({ className }: IconProps) => {
+  return (
+    <svg
+      width='22'
+      height='22'
+      viewBox='0 0 22 22'
+      fill='none'
+      xmlns='http://www.w3.org/2000/svg'
+      className={className}
+    >
+      <path
+        d='M11 16C13.7614 16 16 13.7614 16 11C16 8.23858 13.7614 6 11 6C8.23858 6 6 8.23858 6 11C6 13.7614 8.23858 16 11 16Z'
+        // fill='#292A2D'
+      />
+      <path
+        d='M11 1V3M11 19V21M3 11H1M5.31412 5.31412L3.8999 3.8999M16.6859 5.31412L18.1001 3.8999M5.31412 16.69L3.8999 18.1042M16.6859 16.69L18.1001 18.1042M21 11H19M16 11C16 13.7614 13.7614 16 11 16C8.23858 16 6 13.7614 6 11C6 8.23858 8.23858 6 11 6C13.7614 6 16 8.23858 16 11Z'
+        // stroke='#292A2D'
+        strokeWidth='2'
+        strokeLinecap='round'
+        strokeLinejoin='round'
+      />
     </svg>
   );
 };
