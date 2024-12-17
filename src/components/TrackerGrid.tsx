@@ -1,22 +1,11 @@
 import { useState } from 'react';
-import DatePicker from './DatePicker';
-import CreateHabitForm from './forms/CreateHabitForm';
-import { Habit } from '../utils/types';
 import useHabits from '../hooks/useHabits';
 import useHabitRecords from '../hooks/useHabitRecords';
-
-const getDaysInMonth = (year: number, month: number) => {
-  const daysInMonth = new Date(year, month + 1, 0).getDate();
-  const weekdays = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
-
-  return Array.from({ length: daysInMonth }, (_, i) => {
-    const date = new Date(year, month, i + 1);
-    return {
-      dayNum: i + 1,
-      dayOfTheWeek: weekdays[date.getDay()],
-    };
-  });
-};
+import DatePicker from './DatePicker';
+import CreateHabitForm from './forms/CreateHabitForm';
+import { getDaysInMonth } from '../utils/dateUtils';
+import { Habit } from '../utils/types';
+import { Check, Plus } from 'lucide-react';
 
 const TrackerGrid = () => {
   const [isHabitFormOpen, setIsHabitFormOpen] = useState(false);
@@ -31,21 +20,28 @@ const TrackerGrid = () => {
   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
   const daysArray = getDaysInMonth(selectedYear, selectedMonth);
 
-  const { habits, setHabits, habitsError, areHabitsLoading } = useHabits();
-  const { habitRecords, recordsError, areRecordsLoading, updateHabitRecord } =
-    useHabitRecords(habits, selectedMonth, selectedYear);
+  const { habits, setHabits } = useHabits();
+  const { habitRecords, updateHabitRecord } = useHabitRecords(
+    habits,
+    selectedMonth,
+    selectedYear
+  );
 
   const handleNewHabitCreated = (newHabit: Habit) => {
     setIsHabitFormOpen(false);
     setHabits((prevHabits) => [...prevHabits, newHabit]);
   };
 
-  const getButtonText = (habitId: string, date: string) => {
+  const getButtonContent = (habitId: string, date: string) => {
     const record = habitRecords.find(
       (rec) => rec.habit_id === habitId && rec.date === date
     );
 
-    return record?.is_completed ? 'x' : '-';
+    return record?.is_completed ? (
+      <Check className='size-5 stroke-charcoal' />
+    ) : (
+      <></>
+    );
   };
 
   return (
@@ -57,7 +53,7 @@ const TrackerGrid = () => {
         setSelectedYear={setSelectedYear}
       />
       <div className='overflow-x-none overflow-y-hidden w-full'>
-        <table className='min-w-full table-fixed border-collapse border'>
+        <table className='min-w-full table-fixed border-2 border-whisper'>
           <colgroup>
             <col className='w-20' />
             {daysArray.map((_, index) => (
@@ -70,7 +66,7 @@ const TrackerGrid = () => {
           <thead>
             <tr>
               <th
-                className='sticky border text-center align-middle whitespace-nowrap'
+                className='border-2 border-whisper text-center align-middle whitespace-nowrap text-2xl px-4 font-editorial font-normal'
                 rowSpan={2}
               >
                 Habits
@@ -79,24 +75,24 @@ const TrackerGrid = () => {
               {daysArray.map((day) => (
                 <th
                   key={`weekday-${day.dayNum}`}
-                  className={`border text-center align-middle whitespace-nowrap ${
+                  className={`border-2 border-whisper text-center align-middle whitespace-nowrap p-1 min-w-[35px] font-montreal font-normal ${
                     day.dayNum === currentDate.day &&
                     selectedMonth === currentDate.month - 1 &&
                     selectedYear === currentDate.year &&
-                    'bg-violet-300'
+                    'bg-charcoal text-white border-charcoal'
                   }`}
                 >
                   {day.dayOfTheWeek}
                 </th>
               ))}
               <th
-                className='border text-center align-middle whitespace-nowrap'
+                className='border-2 border-whisper text-center align-middle whitespace-nowrap text-2xl px-4 font-editorial font-normal'
                 rowSpan={2}
               >
                 Goal
               </th>
               <th
-                className='border text-center align-middle whitespace-nowrap'
+                className='border-2 border-whisper text-center align-middle whitespace-nowrap text-2xl px-4 font-editorial font-normal'
                 rowSpan={2}
               >
                 Achieved
@@ -107,11 +103,11 @@ const TrackerGrid = () => {
               {daysArray.map((day) => (
                 <th
                   key={`day-${day.dayNum}`}
-                  className={`border text-center align-middle whitespace-nowrap py-5 ${
+                  className={`border-2 border-whisper text-center align-middle whitespace-nowrap py-5 font-montreal font-normal ${
                     day.dayNum === currentDate.day &&
                     selectedMonth === currentDate.month - 1 &&
                     selectedYear === currentDate.year &&
-                    'bg-violet-300'
+                    'bg-charcoal text-white border-charcoal'
                   }`}
                 >
                   {day.dayNum}
@@ -122,7 +118,9 @@ const TrackerGrid = () => {
           <tbody>
             {habits.map((habit) => (
               <tr key={habit.habit_id}>
-                <td className='border'>{habit.name}</td>
+                <td className='border-2 border-whisper font-montreal px-4'>
+                  {habit.name}
+                </td>
                 {daysArray.map((day) => {
                   const recordDate = new Date(
                     selectedYear,
@@ -132,40 +130,56 @@ const TrackerGrid = () => {
                     .toISOString()
                     .split('T')[0];
 
+                  const isRecordCompleted = habitRecords.some(
+                    (record) =>
+                      record.habit_id === habit.habit_id &&
+                      record.date === recordDate &&
+                      record.is_completed
+                  );
+
                   return (
                     <td
                       key={`record-${habit.habit_id}-${day.dayNum}`}
-                      className='border'
+                      className={`p-0 border-2 ${
+                        isRecordCompleted ? 'border-eggshell' : 'border-whisper'
+                      }`}
                     >
                       <button
                         onClick={() => {
-                          // console.log('record date:', recordDate);
                           updateHabitRecord(habit.habit_id, recordDate);
                         }}
-                        className={`size-full ${
-                          areRecordsLoading
-                            ? 'bg-blue-500'
-                            : recordsError
-                            ? 'bg-red-500'
-                            : 'bg-green-500'
+                        className={`size-[35px] xl:size-full xl:min-h-[35px] flex items-center justify-center ${
+                          isRecordCompleted
+                            ? 'bg-eggshell hover:bg-parchment'
+                            : 'bg-white hover:bg-ivory'
                         }`}
                       >
-                        {getButtonText(habit.habit_id, recordDate)}
+                        {getButtonContent(habit.habit_id, recordDate)}
                       </button>
                     </td>
                   );
                 })}
-                <td className='border text-center'>goal: 0</td>
-                <td className='border text-center'>achieved: 0</td>
+                <td className='border-2 border-whisper text-center'>
+                  {habit.goal}
+                </td>
+                <td className='border-2 border-whisper text-center'>
+                  {habit.achieved}
+                </td>
               </tr>
             ))}
             <tr>
-              <td colSpan={daysArray.length + 3} className='border'>
+              <td
+                colSpan={daysArray.length + 3}
+                className='border-x-2 border-white'
+              >
                 <button
-                  className='bg-slate-100 py-4 w-full text-center font-semibold'
+                  className='flex items-center gap-2 py-2 w-full text-center group hover:bg-ivory'
                   onClick={() => setIsHabitFormOpen(true)}
                 >
-                  Click here to get started and create a new habit!
+                  <Plus className='size-6 stroke-off group-hover:stroke-charcoal' />
+                  <span className='text-off font-montreal text-lg group-hover:text-charcoal'>
+                    New Habit
+                  </span>
                 </button>
               </td>
             </tr>
@@ -177,19 +191,6 @@ const TrackerGrid = () => {
           isVisible={isHabitFormOpen}
         />
       </div>
-      {areHabitsLoading && (
-        <div className='bg-green-400'>
-          {' '}
-          <p>Loading...</p>
-        </div>
-      )}
-      {habitsError && (
-        <div className='bg-red-400'>
-          {' '}
-          <p>1. {habitsError}</p>
-          <p>2. {recordsError}</p>
-        </div>
-      )}
     </div>
   );
 };
