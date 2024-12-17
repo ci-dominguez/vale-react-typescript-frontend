@@ -16,6 +16,7 @@ export default {
         eggshell: '#F5F4F0',
         ivory: '#FBFBF9',
         seafoam: '#A9D8C8',
+        off: '#9B9B9B',
       },
     },
   },
