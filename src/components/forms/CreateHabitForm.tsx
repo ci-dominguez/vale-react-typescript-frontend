@@ -84,6 +84,15 @@ const CreateHabitForm = ({
           </span>
         )}
       </div>
+      <div className='flex flex-col gap-2'>
+        <label htmlFor='goal'>Monthly Goal</label>
+        <input {...register('goal')} type='number' id='goal' />
+        {errors.description && (
+          <span className='text-red-500 text-sm mt-1'>
+            {errors.description.message}
+          </span>
+        )}
+      </div>
       {submitError && (
         <p className='text-red-500 text-sm mt-1'>{submitError}</p>
       )}

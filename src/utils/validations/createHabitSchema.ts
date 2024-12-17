@@ -9,6 +9,7 @@ export const createHabitSchema = z.object({
     .string()
     .min(1, 'A description is just a note for yourself')
     .max(125, 'Habit description must be less than 250 characters'),
+  goal: z.coerce.number().min(1, 'Goal must be greater than 0'),
 });
 
 export type CreateHabitData = z.infer<typeof createHabitSchema>;
