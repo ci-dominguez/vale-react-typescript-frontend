@@ -6,9 +6,13 @@ import CreateHabitForm from './forms/CreateHabitForm';
 import { getDaysInMonth } from '../utils/dateUtils';
 import { Habit } from '../utils/types';
 import { Check, Plus } from 'lucide-react';
+import DeleteHabitButton from './forms/DeleteHabitButton';
+import EditHabitForm, { EditHabitFormButton } from './forms/EditHabitForm';
 
 const TrackerGrid = () => {
-  const [isHabitFormOpen, setIsHabitFormOpen] = useState(false);
+  const [isCreateHabitFormOpen, setIsCreateHabitFormOpen] = useState(false);
+  const [isEditHabitFormOpen, setIsEditHabitFormOpen] = useState(false);
+  const [selectedHabit, setSelectedHabit] = useState<Habit>();
 
   const currentDate = {
     day: new Date().getDate(),
@@ -28,8 +32,17 @@ const TrackerGrid = () => {
   );
 
   const handleNewHabitCreated = (newHabit: Habit) => {
-    setIsHabitFormOpen(false);
+    setIsCreateHabitFormOpen(false);
     setHabits((prevHabits) => [...prevHabits, newHabit]);
+  };
+
+  const handleHabitUpdated = (updatedHabit: Habit) => {
+    setIsEditHabitFormOpen(false);
+    setHabits((prevHabits) =>
+      prevHabits.map((habit) =>
+        habit.habit_id === updatedHabit.habit_id ? updatedHabit : habit
+      )
+    );
   };
 
   const getButtonContent = (habitId: string, date: string) => {
@@ -118,8 +131,15 @@ const TrackerGrid = () => {
           <tbody>
             {habits.map((habit) => (
               <tr key={habit.habit_id}>
-                <td className='border-2 border-whisper font-montreal px-4'>
-                  {habit.name}
+                <td className='group relative border-2 border-whisper font-montreal px-4'>
+                  <span className='flex group-hover:hidden'>{habit.name}</span>
+                  <EditHabitFormButton
+                    onClick={() => {
+                      setIsEditHabitFormOpen(true);
+                      setSelectedHabit(habit);
+                    }}
+                  />
+                  <DeleteHabitButton habitID={habit.habit_id} />
                 </td>
                 {daysArray.map((day) => {
                   const recordDate = new Date(
@@ -162,9 +182,7 @@ const TrackerGrid = () => {
                 <td className='border-2 border-whisper text-center'>
                   {habit.goal}
                 </td>
-                <td className='border-2 border-whisper text-center'>
-                  {habit.achieved}
-                </td>
+                <td className='border-2 border-whisper text-center'>Null</td>
               </tr>
             ))}
             <tr>
@@ -174,7 +192,7 @@ const TrackerGrid = () => {
               >
                 <button
                   className='flex items-center gap-2 py-2 w-full text-center group hover:bg-ivory'
-                  onClick={() => setIsHabitFormOpen(true)}
+                  onClick={() => setIsCreateHabitFormOpen(true)}
                 >
                   <Plus className='size-6 stroke-off group-hover:stroke-charcoal' />
                   <span className='text-off font-montreal text-lg group-hover:text-charcoal'>
@@ -186,9 +204,15 @@ const TrackerGrid = () => {
           </tbody>
         </table>
         <CreateHabitForm
-          onClose={() => setIsHabitFormOpen(false)}
+          onClose={() => setIsCreateHabitFormOpen(false)}
           onHabitCreated={handleNewHabitCreated}
-          isVisible={isHabitFormOpen}
+          isVisible={isCreateHabitFormOpen}
+        />
+        <EditHabitForm
+          onClose={() => setIsEditHabitFormOpen(false)}
+          onHabitUpdated={handleHabitUpdated}
+          isVisible={isEditHabitFormOpen}
+          habit={selectedHabit!}
         />
       </div>
     </div>
