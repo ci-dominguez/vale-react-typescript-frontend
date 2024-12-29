@@ -11,10 +11,8 @@ export interface Habit {
   user_id: string;
   name: string;
   description: string;
-  total_completions: number;
   created_at: Date;
   goal: number;
-  achieved: number;
 }
 
 export interface HabitRecord {
