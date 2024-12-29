@@ -5,9 +5,9 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import api from '../../api/axios';
 import { Habit } from '../../utils/types';
 import {
-  createHabitSchema,
-  CreateHabitData,
-} from '../../utils/validations/createHabitSchema';
+  HabitFormSchema,
+  HabitData,
+} from '../../utils/validations/habitSchema';
 
 interface CreateHabitFormProps {
   onClose: () => void;
@@ -31,9 +31,9 @@ const CreateHabitForm = ({
     handleSubmit,
     formState: { errors },
     reset,
-  } = useForm<CreateHabitData>({ resolver: zodResolver(createHabitSchema) });
+  } = useForm<HabitData>({ resolver: zodResolver(HabitFormSchema) });
 
-  const onFormSubmit = async (data: CreateHabitData) => {
+  const onFormSubmit = async (data: HabitData) => {
     setIsSubmitting(true);
     setSubmitError(null);
     setSubmitSuccess(false);

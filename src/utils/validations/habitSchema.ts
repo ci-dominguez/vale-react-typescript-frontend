@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-export const createHabitSchema = z.object({
+export const HabitFormSchema = z.object({
   name: z
     .string()
     .min(1, 'A habit needs a name')
@@ -12,4 +12,4 @@ export const createHabitSchema = z.object({
   goal: z.coerce.number().min(1, 'Goal must be greater than 0'),
 });
 
-export type CreateHabitData = z.infer<typeof createHabitSchema>;
+export type HabitData = z.infer<typeof HabitFormSchema>;
