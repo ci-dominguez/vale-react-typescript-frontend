@@ -131,15 +131,19 @@ const TrackerGrid = () => {
           <tbody>
             {habits.map((habit) => (
               <tr key={habit.habit_id}>
-                <td className='group relative border-2 border-whisper font-montreal px-4'>
-                  <span className='flex group-hover:hidden'>{habit.name}</span>
-                  <EditHabitFormButton
-                    onClick={() => {
-                      setIsEditHabitFormOpen(true);
-                      setSelectedHabit(habit);
-                    }}
-                  />
-                  <DeleteHabitButton habitID={habit.habit_id} />
+                <td className='group border-2 border-whisper font-montreal px-4'>
+                  <div className='flex flex-row group-hover:justify-center gap-2'>
+                    <span className='flex group-hover:hidden'>
+                      {habit.name}
+                    </span>
+                    <EditHabitFormButton
+                      onClick={() => {
+                        setIsEditHabitFormOpen(true);
+                        setSelectedHabit(habit);
+                      }}
+                    />
+                    <DeleteHabitButton habitID={habit.habit_id} />
+                  </div>
                 </td>
                 {daysArray.map((day) => {
                   const recordDate = new Date(
