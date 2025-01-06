@@ -1,9 +1,14 @@
 interface ButtonProps {
   children: React.ReactNode;
   variant: 'primary' | 'secondary';
+  type?: 'button' | 'submit';
 }
 
-const Button = ({ children, variant = 'primary' }: ButtonProps) => {
+const Button = ({
+  children,
+  variant = 'primary',
+  type = 'button',
+}: ButtonProps) => {
   const baseClasses = 'rounded-full flex font-editorial text-lg';
 
   const variantStylesMap: Record<string, string> = {
@@ -15,7 +20,7 @@ const Button = ({ children, variant = 'primary' }: ButtonProps) => {
     variantStylesMap[variant] || variantStylesMap['primary'];
 
   return (
-    <button type='button' className={`${baseClasses} ${variantStyles}`}>
+    <button type={type} className={`${baseClasses} ${variantStyles}`}>
       {children}
     </button>
   );
