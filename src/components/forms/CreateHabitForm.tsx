@@ -8,6 +8,8 @@ import {
   HabitFormSchema,
   HabitData,
 } from '../../utils/validations/habitSchema';
+import { X } from 'lucide-react';
+import Button from '../ui/Button';
 
 interface CreateHabitFormProps {
   onClose: () => void;
@@ -61,57 +63,80 @@ const CreateHabitForm = ({
     }
   };
 
+  if (!isVisible) return null;
+
   return (
     <form
       onSubmit={handleSubmit(onFormSubmit)}
-      className={`${isVisible ? 'flex flex-col' : 'hidden'} gap-4 bg-blue-300`}
+      className='fixed inset-0 z-50 flex bg-charcoal  bg-opacity-40 justify-center items-center'
     >
-      <div className='flex flex-col gap-2'>
-        <label htmlFor='name'>Habit Name</label>
-        <input {...register('name')} type='text' id='name' />
-        {errors.name && (
-          <span className='text-red-500 text-sm mt-1'>
-            {errors.name.message}
-          </span>
+      <div className='flex flex-col overflow-y-auto max-h-screen w-[90%] px-4 py-10 gap-6 rounded-xl bg-eggshell'>
+        <button type='button' onClick={onClose} className='mx-auto'>
+          <X className='size-6 stroke-onyx' />
+        </button>
+        <span className='font-editorial text-3xl pt-2 text-center'>
+          New Habit
+        </span>
+        <div className='flex flex-col gap-2'>
+          <label htmlFor='name' className='font-montreal text-lg pt-2'>
+            Habit Name
+          </label>
+          <input
+            {...register('name')}
+            type='text'
+            id='name'
+            className='bg-eggshell border-b-charcoal border-b-2 border-opacity-40 focus:border-opacity-100 outline-none'
+          />
+          {errors.name && (
+            <span className='text-red-500 text-sm mt-1'>
+              {errors.name.message}
+            </span>
+          )}
+        </div>
+        <div className='flex flex-col gap-2'>
+          <label htmlFor='description' className='font-montreal text-lg pt-2'>
+            Description
+          </label>
+          <input
+            {...register('description')}
+            type='text'
+            id='description'
+            className='bg-eggshell border-b-charcoal border-b-2 border-opacity-40 focus:border-opacity-100 outline-none'
+          />
+          {errors.description && (
+            <span className='text-red-500 text-sm mt-1'>
+              {errors.description.message}
+            </span>
+          )}
+        </div>
+        <div className='flex flex-col gap-2'>
+          <label htmlFor='goal' className='font-montreal text-lg pt-2'>
+            Monthly Goal
+          </label>
+          <input
+            {...register('goal')}
+            type='number'
+            id='goal'
+            className='bg-eggshell border-b-charcoal border-b-2 border-opacity-40 focus:border-opacity-100 outline-none'
+          />
+          {errors.description && (
+            <span className='text-red-500 text-sm mt-1'>
+              {errors.description.message}
+            </span>
+          )}
+        </div>
+        {submitError && (
+          <p className='text-red-500 text-sm mt-1'>{submitError}</p>
         )}
-      </div>
-      <div className='flex flex-col gap-2'>
-        <label htmlFor='description'>Description</label>
-        <input {...register('description')} type='text' id='description' />
-        {errors.description && (
-          <span className='text-red-500 text-sm mt-1'>
-            {errors.description.message}
-          </span>
+        {submitSuccess && (
+          <p className='text-green-500 text-sm mt-1'>Habit created!</p>
         )}
-      </div>
-      <div className='flex flex-col gap-2'>
-        <label htmlFor='goal'>Monthly Goal</label>
-        <input {...register('goal')} type='number' id='goal' />
-        {errors.description && (
-          <span className='text-red-500 text-sm mt-1'>
-            {errors.description.message}
+        <Button variant='primary' type='submit'>
+          <span className='px-6 py-4 w-full text-center'>
+            {isSubmitting ? 'Creating habit...' : 'Create habit'}
           </span>
-        )}
+        </Button>
       </div>
-      {submitError && (
-        <p className='text-red-500 text-sm mt-1'>{submitError}</p>
-      )}
-      {submitSuccess && (
-        <p className='text-green-500 text-sm mt-1'>Habit created!</p>
-      )}
-      <button
-        type='submit'
-        className='border border-black bg-slate-400 px-6 py-4'
-      >
-        {isSubmitting ? 'Creating habit...' : 'Create Habit'}
-      </button>
-      <button
-        type='button'
-        onClick={onClose}
-        className='border border-black bg-red-500 px-6 py-4'
-      >
-        Close Form
-      </button>
     </form>
   );
 };
