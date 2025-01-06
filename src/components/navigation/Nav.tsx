@@ -2,7 +2,7 @@ import { SignedIn, SignedOut } from '@clerk/clerk-react';
 import { useState } from 'react';
 import { Link, useLocation } from 'react-router';
 import Logo from '../ui/Icons';
-import { MenuIcon } from 'lucide-react';
+import { MenuIcon, X } from 'lucide-react';
 import Button from '../ui/Button';
 import ThemeToggle from '../ui/ThemeToggle';
 
@@ -66,7 +66,11 @@ const Nav = () => {
           }}
           className='md:hidden'
         >
-          <MenuIcon className='stroke-charcoal size-8' />
+          {isOpen ? (
+            <X className='stroke-charcoal size-8' />
+          ) : (
+            <MenuIcon className='stroke-charcoal size-8' />
+          )}
         </button>
       </div>
 
