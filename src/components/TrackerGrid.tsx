@@ -6,7 +6,6 @@ import CreateHabitForm from './forms/CreateHabitForm';
 import { getDaysInMonth } from '../utils/dateUtils';
 import { Habit } from '../utils/types';
 import { Check, Plus } from 'lucide-react';
-import DeleteHabitButton from './forms/DeleteHabitButton';
 import EditHabitForm, { EditHabitFormButton } from './forms/EditHabitForm';
 
 const TrackerGrid = () => {
@@ -131,9 +130,9 @@ const TrackerGrid = () => {
           <tbody>
             {habits.map((habit) => (
               <tr key={habit.habit_id}>
-                <td className='group border-2 border-whisper font-montreal px-4'>
+                <td className='group border-2 border-whisper font-montreal '>
                   <div className='flex flex-row group-hover:justify-center gap-2'>
-                    <span className='flex group-hover:hidden'>
+                    <span className='flex group-hover:hidden px-4'>
                       {habit.name}
                     </span>
                     <EditHabitFormButton
@@ -142,7 +141,6 @@ const TrackerGrid = () => {
                         setSelectedHabit(habit);
                       }}
                     />
-                    <DeleteHabitButton habitID={habit.habit_id} />
                   </div>
                 </td>
                 {daysArray.map((day) => {
