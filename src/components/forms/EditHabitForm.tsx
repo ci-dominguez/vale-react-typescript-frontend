@@ -8,7 +8,8 @@ import {
   HabitFormSchema,
   HabitData,
 } from '../../utils/validations/habitSchema';
-import { Pencil } from 'lucide-react';
+import { Pencil, X } from 'lucide-react';
+import Button from '../ui/Button';
 
 interface FormProps {
   onClose: () => void;
@@ -23,8 +24,12 @@ interface ButtonProps {
 
 export const EditHabitFormButton = ({ onClick }: ButtonProps) => {
   return (
-    <button className='hidden group-hover:flex' onClick={onClick}>
-      <Pencil className='stroke-2' />
+    <button
+      className='hidden group-hover:flex gap-1 items-center w-full px-4 justify-center group'
+      onClick={onClick}
+    >
+      <span>Edit</span>
+      <Pencil className='stroke-2 size-5 group-active:stroke-blue-600' />
     </button>
   );
 };
@@ -102,59 +107,87 @@ const EditHabitForm = ({
     }
   };
 
+  if (!isVisible) return null;
+
   return (
     <form
       onSubmit={handleSubmit(onFormSubmit)}
-      className={`${
-        isVisible ? 'flex flex-col' : 'hidden'
-      } gap-4 bg-purple-500`}
+      className='fixed inset-0 z-50 flex bg-charcoal  bg-opacity-40 justify-center items-center'
     >
-      <div className='flex flex-col gap-2'>
-        <label htmlFor='name'>Habit Name</label>
-        <input {...register('name')} type='text' id='name' />
-        {errors.name && (
-          <span className='text-red-500 text-sm mt-1'>
-            {errors.name.message}
-          </span>
+      <div className='flex flex-col overflow-y-auto max-h-screen w-[90%] px-4 py-10 gap-6 rounded-xl bg-eggshell'>
+        <button type='button' onClick={onClose} className='mx-auto'>
+          <X className='size-6 stroke-onyx' />
+        </button>
+        <span className='font-editorial text-3xl pt-2 text-center'>
+          Edit Habit
+        </span>
+        <div className='flex flex-col gap-2'>
+          <label htmlFor='name' className='font-montreal text-lg pt-2'>
+            Habit Name
+          </label>
+          <input
+            {...register('name')}
+            type='text'
+            id='name'
+            className='bg-eggshell border-b-charcoal border-b-2 border-opacity-40 focus:border-opacity-100 outline-none'
+          />
+          {errors.name && (
+            <span className='text-red-500 text-sm mt-1'>
+              {errors.name.message}
+            </span>
+          )}
+        </div>
+        <div className='flex flex-col gap-2'>
+          <label htmlFor='description' className='font-montreal text-lg pt-2'>
+            Description
+          </label>
+          <textarea
+            {...register('description')}
+            id='description'
+            className='bg-eggshell border-b-charcoal border-b-2 border-opacity-40 focus:border-opacity-100 outline-none'
+          />
+          {errors.description && (
+            <span className='text-red-500 text-sm mt-1'>
+              {errors.description.message}
+            </span>
+          )}
+        </div>
+        <div className='flex flex-col gap-2'>
+          <label htmlFor='goal' className='font-montreal text-lg pt-2'>
+            Monthly Goal
+          </label>
+          <input
+            {...register('goal')}
+            type='number'
+            id='goal'
+            className='bg-eggshell border-b-charcoal border-b-2 border-opacity-40 focus:border-opacity-100 outline-none'
+          />
+          {errors.description && (
+            <span className='text-red-500 text-sm mt-1'>
+              {errors.description.message}
+            </span>
+          )}
+        </div>
+        {submitError && (
+          <p className='text-red-500 text-sm mt-1'>{submitError}</p>
         )}
-      </div>
-      <div className='flex flex-col gap-2'>
-        <label htmlFor='description'>Description</label>
-        <input {...register('description')} type='text' id='description' />
-        {errors.description && (
-          <span className='text-red-500 text-sm mt-1'>
-            {errors.description.message}
-          </span>
+        {submitSuccess && (
+          <p className='text-green-500 text-sm mt-1'>Habit created!</p>
         )}
+        <div className='flex flex-col gap-4'>
+          <Button variant='primary' type='submit'>
+            <span className='px-6 py-4 w-full text-center'>
+              {isSubmitting ? 'Updating habit...' : 'Update habit'}
+            </span>
+          </Button>
+          <span className='text-center'>&mdash;&mdash; or &mdash;&mdash;</span>
+          <Button variant='error' type='button' onClick={onClose}>
+            <span className='px-6 py-4 w-full text-center'>
+              {isSubmitting ? 'Deleting habit...' : 'Delete habit'}
+            </span>
+          </Button>
+        </div>
       </div>
-      <div className='flex flex-col gap-2'>
-        <label htmlFor='goal'>Monthly Goal</label>
-        <input {...register('goal')} type='number' id='goal' />
-        {errors.description && (
-          <span className='text-red-500 text-sm mt-1'>
-            {errors.description.message}
-          </span>
-        )}
-      </div>
-      {submitError && (
-        <p className='text-red-500 text-sm mt-1'>{submitError}</p>
-      )}
-      {submitSuccess && (
-        <p className='text-green-500 text-sm mt-1'>Habit created!</p>
-      )}
-      <button
-        type='submit'
-        className='border border-black bg-slate-400 px-6 py-4'
-      >
-        {isSubmitting ? 'Updating habit...' : 'Update Habit'}
-      </button>
-      <button
-        type='button'
-        onClick={onClose}
-        className='border border-black bg-red-500 px-6 py-4'
-      >
-        Close Form
-      </button>
     </form>
   );
 };
