@@ -97,9 +97,8 @@ const CreateHabitForm = ({
           <label htmlFor='description' className='font-montreal text-lg pt-2'>
             Description
           </label>
-          <input
+          <textarea
             {...register('description')}
-            type='text'
             id='description'
             className='bg-eggshell border-b-charcoal border-b-2 border-opacity-40 focus:border-opacity-100 outline-none'
           />
