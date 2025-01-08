@@ -51,9 +51,7 @@ const TrackerGrid = () => {
 
     return record?.is_completed ? (
       <Check className='size-5 stroke-charcoal' />
-    ) : (
-      <></>
-    );
+    ) : null;
   };
 
   return (
@@ -153,17 +151,19 @@ const TrackerGrid = () => {
                     .split('T')[0];
 
                   const isRecordCompleted = habitRecords.some(
-                    (record) =>
-                      record.habit_id === habit.habit_id &&
-                      record.date === recordDate &&
-                      record.is_completed
+                    (rec) =>
+                      rec.habit_id === habit.habit_id &&
+                      rec.date === recordDate &&
+                      rec.is_completed
                   );
 
                   return (
                     <td
                       key={`record-${habit.habit_id}-${day.dayNum}`}
-                      className={`p-0 border-2 ${
-                        isRecordCompleted ? 'border-eggshell' : 'border-whisper'
+                      className={`group p-0 border-2 ${
+                        isRecordCompleted
+                          ? 'border-eggshell bg-eggshell hover:bg-parchment'
+                          : 'border-whisper bg-white hover:bg-ivory'
                       }`}
                     >
                       <button
@@ -172,8 +172,8 @@ const TrackerGrid = () => {
                         }}
                         className={`size-[35px] xl:size-full xl:min-h-[35px] flex items-center justify-center ${
                           isRecordCompleted
-                            ? 'bg-eggshell hover:bg-parchment'
-                            : 'bg-white hover:bg-ivory'
+                            ? 'bg-eggshell group-hover:bg-parchment'
+                            : 'bg-white group-hover:bg-ivory'
                         }`}
                       >
                         {getButtonContent(habit.habit_id, recordDate)}
@@ -184,7 +184,14 @@ const TrackerGrid = () => {
                 <td className='border-2 border-whisper text-center'>
                   {habit.goal}
                 </td>
-                <td className='border-2 border-whisper text-center'>Null</td>
+                <td className='border-2 border-whisper text-center'>
+                  {
+                    habitRecords.filter(
+                      (rec) =>
+                        rec.habit_id === habit.habit_id && rec.is_completed
+                    ).length
+                  }
+                </td>
               </tr>
             ))}
             <tr>
