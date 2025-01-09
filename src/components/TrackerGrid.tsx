@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import useHabits from '../hooks/useHabits';
 import useHabitRecords from '../hooks/useHabitRecords';
 import DatePicker from './DatePicker';
@@ -24,11 +24,29 @@ const TrackerGrid = () => {
   const daysArray = getDaysInMonth(selectedYear, selectedMonth);
 
   const { habits, setHabits } = useHabits();
+  const habitIDs = useMemo(
+    () => habits.map((habit) => habit.habit_id),
+    [habits]
+  );
+
   const { habitRecords, updateHabitRecord } = useHabitRecords(
-    habits,
+    habitIDs,
     selectedMonth,
     selectedYear
   );
+
+  // Precompute a mpa of completed records for better performance
+  const completedRecordsMap = useMemo(() => {
+    const map = new Map();
+    habitRecords.forEach((rec) => {
+      map.set(`${rec.habit_id}-${rec.date}`, rec.is_completed);
+    });
+    return map;
+  }, [habitRecords]);
+
+  const isRecordCompleted = (habitID: string, date: string) => {
+    return completedRecordsMap.get(`${habitID}-${date}`) || false;
+  };
 
   const handleNewHabitCreated = (newHabit: Habit) => {
     setIsCreateHabitFormOpen(false);
@@ -42,16 +60,6 @@ const TrackerGrid = () => {
         habit.habit_id === updatedHabit.habit_id ? updatedHabit : habit
       )
     );
-  };
-
-  const getButtonContent = (habitId: string, date: string) => {
-    const record = habitRecords.find(
-      (rec) => rec.habit_id === habitId && rec.date === date
-    );
-
-    return record?.is_completed ? (
-      <Check className='size-5 stroke-charcoal' />
-    ) : null;
   };
 
   return (
@@ -150,18 +158,11 @@ const TrackerGrid = () => {
                     .toISOString()
                     .split('T')[0];
 
-                  const isRecordCompleted = habitRecords.some(
-                    (rec) =>
-                      rec.habit_id === habit.habit_id &&
-                      rec.date === recordDate &&
-                      rec.is_completed
-                  );
-
                   return (
                     <td
                       key={`record-${habit.habit_id}-${day.dayNum}`}
                       className={`group p-0 border-2 ${
-                        isRecordCompleted
+                        isRecordCompleted(habit.habit_id, recordDate)
                           ? 'border-eggshell bg-eggshell hover:bg-parchment'
                           : 'border-whisper bg-white hover:bg-ivory'
                       }`}
@@ -171,12 +172,14 @@ const TrackerGrid = () => {
                           updateHabitRecord(habit.habit_id, recordDate);
                         }}
                         className={`size-[35px] xl:size-full xl:min-h-[35px] flex items-center justify-center ${
-                          isRecordCompleted
+                          isRecordCompleted(habit.habit_id, recordDate)
                             ? 'bg-eggshell group-hover:bg-parchment'
                             : 'bg-white group-hover:bg-ivory'
                         }`}
                       >
-                        {getButtonContent(habit.habit_id, recordDate)}
+                        {isRecordCompleted(habit.habit_id, recordDate) ? (
+                          <Check className='size-5 stroke-charcoal' />
+                        ) : null}
                       </button>
                     </td>
                   );

@@ -1,10 +1,10 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '@clerk/clerk-react';
 import axios from '../api/axios';
-import { Habit, HabitRecord } from '../utils/types';
+import { HabitRecord } from '../utils/types';
 
 const useHabitRecords = (
-  habits: Habit[],
+  habitIDs: string[],
   selectedMonth: number,
   selectedYear: number
 ) => {
@@ -15,12 +15,12 @@ const useHabitRecords = (
   const { getToken } = useAuth();
 
   useEffect(() => {
-    if (habits.length > 0)
-      fetchHabitRecords(habits, selectedMonth, selectedYear);
-  }, [habits, selectedMonth, selectedYear]);
+    if (habitIDs.length > 0)
+      fetchHabitRecords(habitIDs, selectedMonth, selectedYear);
+  }, [habitIDs, selectedMonth, selectedYear]);
 
   const fetchHabitRecords = async (
-    habits: Habit[],
+    habitIDs: string[],
     selectedMonth: number,
     selectedYear: number
   ) => {
@@ -29,12 +29,12 @@ const useHabitRecords = (
     try {
       const token = await getToken();
 
-      const habitIDs = habits.map((habit) => habit.habit_id).join(',');
+      const idsQuery = habitIDs.join(',');
       const firstDay = new Date(selectedYear, selectedMonth, 1);
       const lastDay = new Date(selectedYear, selectedMonth + 1, 0);
 
       const resp = await axios.get(
-        `/habit-records?habits=${habitIDs}&dates=${
+        `/habit-records?habits=${idsQuery}&dates=${
           firstDay.toISOString().split('T')[0]
         },${lastDay.toISOString().split('T')[0]}`,
         {
