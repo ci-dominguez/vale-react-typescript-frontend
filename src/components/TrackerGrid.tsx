@@ -163,7 +163,7 @@ const TrackerGrid = () => {
                       key={`record-${habit.habit_id}-${day.dayNum}`}
                       className={`group p-0 border-2 ${
                         isRecordCompleted(habit.habit_id, recordDate)
-                          ? `border-${habit.color} bg-${habit.color}`
+                          ? `border-habit-${habit.color} bg-habit-${habit.color}`
                           : 'border-whisper bg-white hover:bg-ivory'
                       }`}
                     >
@@ -173,7 +173,7 @@ const TrackerGrid = () => {
                         }}
                         className={`size-[35px] xl:size-full xl:min-h-[35px] flex items-center justify-center ${
                           isRecordCompleted(habit.habit_id, recordDate)
-                            ? `bg-${habit.color}`
+                            ? `bg-habit-${habit.color}`
                             : 'bg-white group-hover:bg-ivory'
                         }`}
                       >
