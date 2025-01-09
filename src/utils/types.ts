@@ -13,6 +13,7 @@ export interface Habit {
   description: string;
   created_at: Date;
   goal: number;
+  color: string;
 }
 
 export interface HabitRecord {
