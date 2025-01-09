@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '@clerk/clerk-react';
 import axios from '../api/axios';
 import { HabitRecord } from '../utils/types';
@@ -14,56 +14,53 @@ const useHabitRecords = (
 
   const { getToken } = useAuth();
 
+  const fetchHabitRecords = useCallback(
+    async (habitIDs: string[], selectedMonth: number, selectedYear: number) => {
+      setAreRecordsLoading(true);
+      setRecordsError(null);
+      try {
+        const token = await getToken();
+
+        const idsQuery = habitIDs.join(',');
+        const firstDay = new Date(selectedYear, selectedMonth, 1);
+        const lastDay = new Date(selectedYear, selectedMonth + 1, 0);
+
+        const resp = await axios.get(
+          `/habit-records?habits=${idsQuery}&dates=${
+            firstDay.toISOString().split('T')[0]
+          },${lastDay.toISOString().split('T')[0]}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        const clientRecordsArr: HabitRecord[] = resp.data.map(
+          (record: HabitRecord) => {
+            return {
+              habit_id: record.habit_id,
+              record_id: record.record_id,
+              date: new Date(record.date).toISOString().split('T')[0],
+              is_completed: record.is_completed,
+            };
+          }
+        );
+
+        setHabitRecords(clientRecordsArr);
+      } catch (error) {
+        setRecordsError(`Failed to fetch habit records: ${error}`);
+      } finally {
+        setAreRecordsLoading(false);
+      }
+    },
+    [getToken]
+  );
+
   useEffect(() => {
     if (habitIDs.length > 0)
       fetchHabitRecords(habitIDs, selectedMonth, selectedYear);
-  }, [habitIDs, selectedMonth, selectedYear]);
-
-  const fetchHabitRecords = async (
-    habitIDs: string[],
-    selectedMonth: number,
-    selectedYear: number
-  ) => {
-    setAreRecordsLoading(true);
-    setRecordsError(null);
-    try {
-      const token = await getToken();
-
-      const idsQuery = habitIDs.join(',');
-      const firstDay = new Date(selectedYear, selectedMonth, 1);
-      const lastDay = new Date(selectedYear, selectedMonth + 1, 0);
-
-      const resp = await axios.get(
-        `/habit-records?habits=${idsQuery}&dates=${
-          firstDay.toISOString().split('T')[0]
-        },${lastDay.toISOString().split('T')[0]}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-
-      const clientRecordsArr: HabitRecord[] = resp.data.map(
-        (record: HabitRecord) => {
-          return {
-            habit_id: record.habit_id,
-            record_id: record.record_id,
-            date: new Date(record.date).toISOString().split('T')[0],
-            is_completed: record.is_completed,
-          };
-        }
-      );
-
-      // console.log('clientRecordsArr', clientRecordsArr);
-
-      setHabitRecords(clientRecordsArr);
-    } catch (error) {
-      setRecordsError(`Failed to fetch habit records: ${error}`);
-    } finally {
-      setAreRecordsLoading(false);
-    }
-  };
+  }, [fetchHabitRecords, habitIDs, selectedMonth, selectedYear]);
 
   const updateHabitRecord = async (habitID: string, date: string) => {
     // Immediately update the record locally

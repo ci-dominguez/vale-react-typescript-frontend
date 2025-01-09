@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '@clerk/clerk-react';
 import axios from '../api/axios';
 import { Habit } from '../utils/types';
@@ -10,11 +10,7 @@ const useHabits = () => {
 
   const { getToken } = useAuth();
 
-  useEffect(() => {
-    fetchHabits();
-  }, [getToken]);
-
-  const fetchHabits = async () => {
+  const fetchHabits = useCallback(async () => {
     setAreHabitsLoading(true);
     setHabitsError(null);
     try {
@@ -32,7 +28,11 @@ const useHabits = () => {
     } finally {
       setAreHabitsLoading(false);
     }
-  };
+  }, [getToken]);
+
+  useEffect(() => {
+    fetchHabits();
+  }, [fetchHabits]);
 
   return {
     habits,
