@@ -136,7 +136,7 @@ const TrackerGrid = () => {
           <tbody>
             {habits.map((habit) => (
               <tr key={habit.habit_id}>
-                <td className='group border-2 border-whisper font-montreal '>
+                <td className='group border-2 border-whisper font-montreal hover:bg-whisper/30'>
                   <div className='flex flex-row group-hover:justify-center gap-2'>
                     <span className='flex group-hover:hidden px-4'>
                       {habit.name}
