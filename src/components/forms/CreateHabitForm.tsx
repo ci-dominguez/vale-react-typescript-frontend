@@ -10,6 +10,7 @@ import {
 } from '../../utils/validations/habitSchema';
 import { X } from 'lucide-react';
 import Button from '../ui/Button';
+import axios from 'axios';
 
 interface CreateHabitFormProps {
   onClose: () => void;
@@ -55,9 +56,14 @@ const CreateHabitForm = ({
 
       setSubmitSuccess(true);
       reset();
-    } catch (error) {
-      console.error(error);
-      setSubmitError(`An error occurred while creating the habit: ${error}`);
+    } catch (error: unknown) {
+      if (axios.isAxiosError(error)) {
+        console.error(error);
+        setSubmitError(`${error.response?.data.error}`);
+      } else {
+        console.error(error);
+        setSubmitError(`An unexpected error occurred: ${error}`);
+      }
     } finally {
       setIsSubmitting(false);
     }
