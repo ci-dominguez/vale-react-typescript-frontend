@@ -6,11 +6,12 @@ import CreateHabitForm from './forms/CreateHabitForm';
 import { getDaysInMonth } from '../utils/dateUtils';
 import { Habit } from '../utils/types';
 import { Check, Plus } from 'lucide-react';
-import EditHabitForm, { EditHabitFormButton } from './forms/EditHabitForm';
-
+import EditHabitModal, {
+  EditHabitButton,
+} from './forms/editHabit/EditHabitModal';
 const TrackerGrid = () => {
   const [isCreateHabitFormOpen, setIsCreateHabitFormOpen] = useState(false);
-  const [isEditHabitFormOpen, setIsEditHabitFormOpen] = useState(false);
+  const [isEditHabitModalOpen, setIsEditHabitModalOpen] = useState(false);
   const [selectedHabit, setSelectedHabit] = useState<Habit>();
 
   const currentDate = {
@@ -54,12 +55,16 @@ const TrackerGrid = () => {
   };
 
   const handleHabitUpdated = (updatedHabit: Habit) => {
-    setIsEditHabitFormOpen(false);
+    setIsEditHabitModalOpen(false);
     setHabits((prevHabits) =>
       prevHabits.map((habit) =>
         habit.habit_id === updatedHabit.habit_id ? updatedHabit : habit
       )
     );
+  };
+
+  const handleHabitDeleted = (deletedHabit: Habit) => {
+    return deletedHabit;
   };
 
   return (
@@ -141,9 +146,9 @@ const TrackerGrid = () => {
                     <span className='flex group-hover:hidden px-4'>
                       {habit.name}
                     </span>
-                    <EditHabitFormButton
+                    <EditHabitButton
                       onClick={() => {
-                        setIsEditHabitFormOpen(true);
+                        setIsEditHabitModalOpen(true);
                         setSelectedHabit(habit);
                       }}
                     />
@@ -220,11 +225,12 @@ const TrackerGrid = () => {
           onHabitCreated={handleNewHabitCreated}
           isVisible={isCreateHabitFormOpen}
         />
-        <EditHabitForm
-          onClose={() => setIsEditHabitFormOpen(false)}
-          onHabitUpdated={handleHabitUpdated}
-          isVisible={isEditHabitFormOpen}
+        <EditHabitModal
+          onClose={() => setIsEditHabitModalOpen(false)}
+          isVisible={isEditHabitModalOpen}
           habit={selectedHabit!}
+          onHabitUpdated={handleHabitUpdated}
+          onHabitDeleted={handleHabitDeleted}
         />
       </div>
     </div>

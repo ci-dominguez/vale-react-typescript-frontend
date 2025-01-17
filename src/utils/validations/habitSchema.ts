@@ -12,4 +12,10 @@ export const HabitFormSchema = z.object({
   goal: z.coerce.number().min(1, 'Goal must be greater than 0'),
 });
 
+export const DeleteHabitSchema = z.object({
+  habitID: z.string().uuid(),
+});
+
+export type DeleteHabitData = z.infer<typeof DeleteHabitSchema>;
+
 export type HabitData = z.infer<typeof HabitFormSchema>;
