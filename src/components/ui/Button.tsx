@@ -1,6 +1,6 @@
 interface ButtonProps {
   children: React.ReactNode;
-  variant: 'primary' | 'secondary' | 'error';
+  variant: 'primary' | 'secondary' | 'destructive' | 'destructive-outline';
   type?: 'button' | 'submit';
   onClick?: () => void;
 }
@@ -16,7 +16,9 @@ const Button = ({
   const variantStylesMap: Record<string, string> = {
     primary: 'bg-charcoal text-white hover:bg-[#191919]',
     secondary: 'bg-parchment text-charcoal',
-    error: 'bg-red-600 text-white hover:bg-red-700',
+    destructive: 'bg-red-600 text-white hover:bg-red-700',
+    'destructive-outline':
+      'border border-red-600 text-red-600 hover:bg-red-600 hover:text-white',
   };
 
   const variantStyles =
