@@ -77,7 +77,15 @@ const CreateHabitForm = ({
       className='fixed inset-0 z-50 flex bg-charcoal  bg-opacity-40 justify-center items-center'
     >
       <div className='flex flex-col overflow-y-auto max-h-screen w-[90%] px-4 py-10 gap-6 rounded-xl bg-eggshell'>
-        <button type='button' onClick={onClose} className='mx-auto'>
+        <button
+          type='button'
+          onClick={() => {
+            onClose();
+            setSubmitSuccess(false);
+            setSubmitError(null);
+          }}
+          className='mx-auto'
+        >
           <X className='size-6 stroke-onyx' />
         </button>
         <span className='font-editorial text-3xl pt-2 text-center'>
