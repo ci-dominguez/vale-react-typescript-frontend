@@ -90,7 +90,7 @@ const DeleteHabitForm = ({ onSuccess, onHabitDeleted, habit }: FormProps) => {
       {submitSuccess && (
         <p className='text-green-500 text-sm mt-1'>Habit deleted!</p>
       )}
-      <Button variant='destructive' type='button'>
+      <Button variant='destructive' type='submit'>
         <span className='px-6 py-4 w-full text-center'>
           {isSubmitting ? 'Deleting habit...' : 'Delete habit'}
         </span>
