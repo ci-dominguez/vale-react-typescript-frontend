@@ -1,4 +1,4 @@
-import TrackerGrid from '../components/TrackerGrid';
+import TrackerGrid from '../components/habitTracker/TrackerGrid';
 import MainLayout from '../layouts/MainLayout';
 
 const TrackerPage = () => {

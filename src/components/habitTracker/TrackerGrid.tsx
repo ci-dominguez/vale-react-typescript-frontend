@@ -1,14 +1,15 @@
 import { useMemo, useState } from 'react';
-import useHabits from '../hooks/useHabits';
-import useHabitRecords from '../hooks/useHabitRecords';
+import useHabits from '../../hooks/useHabits';
+import useHabitRecords from '../../hooks/useHabitRecords';
 import DatePicker from './DatePicker';
-import CreateHabitForm from './forms/CreateHabitForm';
-import { getDaysInMonth } from '../utils/dateUtils';
-import { Habit } from '../utils/types';
+import CreateHabitForm from '../forms/CreateHabitForm';
+import { getDaysInMonth } from '../../utils/dateUtils';
+import { Habit } from '../../utils/types';
 import { Check, Plus } from 'lucide-react';
 import EditHabitModal, {
   EditHabitButton,
-} from './forms/editHabit/EditHabitModal';
+} from '../forms/editHabit/EditHabitModal';
+import HabitRowSkeleton from './HabitRowSkeleton';
 const TrackerGrid = () => {
   const [isCreateHabitFormOpen, setIsCreateHabitFormOpen] = useState(false);
   const [isEditHabitModalOpen, setIsEditHabitModalOpen] = useState(false);
@@ -24,19 +25,16 @@ const TrackerGrid = () => {
   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
   const daysArray = getDaysInMonth(selectedYear, selectedMonth);
 
-  const { habits, setHabits } = useHabits();
+  const { habits, areHabitsLoading, setHabits } = useHabits();
   const habitIDs = useMemo(
     () => habits.map((habit) => habit.habit_id),
     [habits]
   );
 
-  const { habitRecords, updateHabitRecord } = useHabitRecords(
-    habitIDs,
-    selectedMonth,
-    selectedYear
-  );
+  const { habitRecords, areRecordsLoading, updateHabitRecord } =
+    useHabitRecords(habitIDs, selectedMonth, selectedYear);
 
-  // Precompute a mpa of completed records for better performance
+  // Precompute a map of completed records for better performance
   const completedRecordsMap = useMemo(() => {
     const map = new Map();
     habitRecords.forEach((rec) => {
@@ -139,69 +137,78 @@ const TrackerGrid = () => {
             </tr>
           </thead>
           <tbody>
-            {habits.map((habit) => (
-              <tr key={habit.habit_id}>
-                <td className='group border-2 border-whisper font-montreal hover:bg-whisper/30'>
-                  <div className='flex flex-row group-hover:justify-center gap-2'>
-                    <span className='flex group-hover:hidden px-4'>
-                      {habit.name}
-                    </span>
-                    <EditHabitButton
-                      onClick={() => {
-                        setIsEditHabitModalOpen(true);
-                        setSelectedHabit(habit);
-                      }}
-                    />
-                  </div>
-                </td>
-                {daysArray.map((day) => {
-                  const recordDate = new Date(
-                    selectedYear,
-                    selectedMonth,
-                    day.dayNum
-                  )
-                    .toISOString()
-                    .split('T')[0];
-
-                  return (
-                    <td
-                      key={`record-${habit.habit_id}-${day.dayNum}`}
-                      className={`group p-0 border-2 ${
-                        isRecordCompleted(habit.habit_id, recordDate)
-                          ? `border-habit-${habit.color} bg-habit-${habit.color}`
-                          : 'border-whisper bg-white hover:bg-ivory'
-                      }`}
-                    >
-                      <button
+            {areHabitsLoading || areRecordsLoading ? (
+              <>
+                <HabitRowSkeleton daysArray={daysArray} />
+                <HabitRowSkeleton daysArray={daysArray} />
+                <HabitRowSkeleton daysArray={daysArray} />
+              </>
+            ) : (
+              habits.map((habit) => (
+                <tr key={habit.habit_id}>
+                  <td className='group border-2 border-whisper font-montreal hover:bg-whisper/30'>
+                    <div className='flex flex-row group-hover:justify-center gap-2'>
+                      <span className='flex group-hover:hidden px-4'>
+                        {habit.name}
+                      </span>
+                      <EditHabitButton
                         onClick={() => {
-                          updateHabitRecord(habit.habit_id, recordDate);
+                          setIsEditHabitModalOpen(true);
+                          setSelectedHabit(habit);
                         }}
-                        className={`size-[35px] xl:size-full xl:min-h-[35px] flex items-center justify-center ${
+                      />
+                    </div>
+                  </td>
+                  {daysArray.map((day) => {
+                    const recordDate = new Date(
+                      selectedYear,
+                      selectedMonth,
+                      day.dayNum
+                    )
+                      .toISOString()
+                      .split('T')[0];
+
+                    return (
+                      <td
+                        key={`record-${habit.habit_id}-${day.dayNum}`}
+                        className={`group p-0 border-2 ${
                           isRecordCompleted(habit.habit_id, recordDate)
-                            ? `bg-habit-${habit.color}`
-                            : 'bg-white group-hover:bg-ivory'
+                            ? `border-habit-${habit.color} bg-habit-${habit.color}`
+                            : 'border-whisper bg-white hover:bg-ivory'
                         }`}
                       >
-                        {isRecordCompleted(habit.habit_id, recordDate) ? (
-                          <Check className='size-5 stroke-charcoal group-hover:size-6' />
-                        ) : null}
-                      </button>
-                    </td>
-                  );
-                })}
-                <td className='border-2 border-whisper text-center'>
-                  {habit.goal}
-                </td>
-                <td className='border-2 border-whisper text-center'>
-                  {
-                    habitRecords.filter(
-                      (rec) =>
-                        rec.habit_id === habit.habit_id && rec.is_completed
-                    ).length
-                  }
-                </td>
-              </tr>
-            ))}
+                        <button
+                          onClick={() => {
+                            updateHabitRecord(habit.habit_id, recordDate);
+                          }}
+                          className={`size-[35px] xl:size-full xl:min-h-[35px] flex items-center justify-center ${
+                            isRecordCompleted(habit.habit_id, recordDate)
+                              ? `bg-habit-${habit.color}`
+                              : 'bg-white group-hover:bg-ivory'
+                          }`}
+                        >
+                          {isRecordCompleted(habit.habit_id, recordDate) ? (
+                            <Check className='size-5 stroke-charcoal group-hover:size-6' />
+                          ) : null}
+                        </button>
+                      </td>
+                    );
+                  })}
+                  <td className='border-2 border-whisper text-center'>
+                    {habit.goal}
+                  </td>
+                  <td className='border-2 border-whisper text-center'>
+                    {
+                      habitRecords.filter(
+                        (rec) =>
+                          rec.habit_id === habit.habit_id && rec.is_completed
+                      ).length
+                    }
+                  </td>
+                </tr>
+              ))
+            )}
+
             <tr>
               <td
                 colSpan={daysArray.length + 3}
