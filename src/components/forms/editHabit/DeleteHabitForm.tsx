@@ -1,5 +1,3 @@
-import { useAuth } from '@clerk/clerk-react';
-import api from '../../../api/axios';
 import Button from '../../ui/Button';
 import { Habit } from '../../../utils/types';
 import { useState } from 'react';
@@ -9,6 +7,7 @@ import {
   DeleteHabitSchema,
 } from '../../../utils/validations/habitSchema';
 import { zodResolver } from '@hookform/resolvers/zod';
+import useHabits from '../../../hooks/useHabits';
 
 interface FormProps {
   onSuccess: () => void;
@@ -21,7 +20,7 @@ const DeleteHabitForm = ({ onSuccess, onHabitDeleted, habit }: FormProps) => {
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [submitSuccess, setSubmitSuccess] = useState(false);
 
-  const { getToken } = useAuth();
+  const { deleteHabit } = useHabits();
 
   const {
     register,
@@ -42,21 +41,16 @@ const DeleteHabitForm = ({ onSuccess, onHabitDeleted, habit }: FormProps) => {
     try {
       if (!data) throw new Error('No data provided');
 
-      const token = await getToken();
+      const result = await deleteHabit(data.habitID);
 
-      const resp = await api.delete(`/habits?habit=${data.habitID}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      console.log('Deleted habit:', resp.data);
-
-      onHabitDeleted(habit);
-
-      setSubmitSuccess(true);
-      reset();
-      onSuccess();
+      if (result.success) {
+        onHabitDeleted(habit);
+        setSubmitSuccess(true);
+        reset();
+        onSuccess();
+      } else {
+        throw new Error(result.error || 'Unknown error');
+      }
     } catch (error) {
       console.error(error);
       setSubmitError(`An error occurred while creating the habit: ${error}`);

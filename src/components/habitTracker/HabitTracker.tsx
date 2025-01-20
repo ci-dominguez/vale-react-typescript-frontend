@@ -62,7 +62,10 @@ const HabitTracker = () => {
   };
 
   const handleHabitDeleted = (deletedHabit: Habit) => {
-    return deletedHabit;
+    setIsEditHabitModalOpen(false);
+    setHabits((prevHabits) =>
+      prevHabits.filter((habit) => habit.habit_id !== deletedHabit.habit_id)
+    );
   };
 
   return (
