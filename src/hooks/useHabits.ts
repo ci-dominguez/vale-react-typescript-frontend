@@ -22,9 +22,6 @@ const useHabits = () => {
           },
         });
 
-        // Update state by filtering out the deleted habit
-        setHabits((prev) => prev.filter((habit) => habit.habit_id !== habitID));
-
         return { success: true };
       } catch (error) {
         console.error(error);
@@ -66,13 +63,6 @@ const useHabits = () => {
         );
 
         updatedHabit = resp.data;
-
-        // Update state by replacing the modified habit
-        setHabits((prev) =>
-          prev.map((habit) =>
-            habit.habit_id === updatedHabit.habit_id ? updatedHabit : habit
-          )
-        );
 
         return { updatedHabit: updatedHabit, success: true };
       } catch (error) {
