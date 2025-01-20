@@ -12,8 +12,8 @@ const Nav = () => {
   const route = location.pathname;
 
   return (
-    <nav className='flex flex-col p-4 bg-white text-charcoal'>
-      <div className='flex items-center justify-between'>
+    <nav className='flex flex-col p-4 bg-white text-charcoal min-h-[84px]'>
+      <div className='flex items-center justify-between min-h-[52px]'>
         <div className='flex items-center gap-4'>
           <Link to='/' className='flex gap-2 items-center'>
             <Logo className='fill-seafoam size-9' />
