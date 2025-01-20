@@ -10,7 +10,7 @@ import EditHabitModal, {
   EditHabitButton,
 } from '../forms/editHabit/EditHabitModal';
 import HabitRowSkeleton from './HabitRowSkeleton';
-const TrackerGrid = () => {
+const HabitTracker = () => {
   const [isCreateHabitFormOpen, setIsCreateHabitFormOpen] = useState(false);
   const [isEditHabitModalOpen, setIsEditHabitModalOpen] = useState(false);
   const [selectedHabit, setSelectedHabit] = useState<Habit>();
@@ -244,4 +244,4 @@ const TrackerGrid = () => {
   );
 };
 
-export default TrackerGrid;
+export default HabitTracker;

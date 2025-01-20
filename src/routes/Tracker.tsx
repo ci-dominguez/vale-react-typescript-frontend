@@ -1,10 +1,10 @@
-import TrackerGrid from '../components/habitTracker/TrackerGrid';
+import HabitTracker from '../components/habitTracker/HabitTracker';
 import MainLayout from '../layouts/MainLayout';
 
 const TrackerPage = () => {
   return (
     <MainLayout>
-      <TrackerGrid />
+      <HabitTracker />
     </MainLayout>
   );
 };
