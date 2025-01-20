@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '@clerk/clerk-react';
 import api from '../api/axios';
 import { Habit } from '../utils/types';
+import { ModifyHabitData } from '../utils/validations/habitSchema';
 
 const useHabits = () => {
   const [habits, setHabits] = useState<Habit[]>([]);
@@ -28,6 +29,59 @@ const useHabits = () => {
       } catch (error) {
         console.error(error);
         return { success: false, error: 'Failed to delete habit' };
+      }
+    },
+    [getToken]
+  );
+
+  const modifyHabit = useCallback(
+    async (
+      data: ModifyHabitData
+    ): Promise<{ updatedHabit: Habit; success: boolean; error?: string }> => {
+      let updatedHabit: Habit = {
+        habit_id: '',
+        user_id: '',
+        name: '',
+        description: '',
+        created_at: new Date(),
+        goal: 0,
+        color: '',
+      };
+
+      try {
+        const token = await getToken();
+
+        const resp = await api.patch(
+          `/habits?habit=${data.habitID}`,
+          {
+            name: data.name,
+            description: data.description,
+            goal: data.goal,
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        updatedHabit = resp.data;
+
+        // Update state by replacing the modified habit
+        setHabits((prev) =>
+          prev.map((habit) =>
+            habit.habit_id === updatedHabit.habit_id ? updatedHabit : habit
+          )
+        );
+
+        return { updatedHabit: updatedHabit, success: true };
+      } catch (error) {
+        console.error(error);
+        return {
+          updatedHabit: updatedHabit,
+          success: false,
+          error: 'Failed to modify habit',
+        };
       }
     },
     [getToken]
@@ -61,6 +115,7 @@ const useHabits = () => {
     habits,
     setHabits,
     deleteHabit,
+    modifyHabit,
     habitsError,
     areHabitsLoading,
   };

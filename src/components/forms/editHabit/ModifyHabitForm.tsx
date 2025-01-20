@@ -1,14 +1,13 @@
 import { useEffect, useState } from 'react';
-import { useAuth } from '@clerk/clerk-react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import api from '../../../api/axios';
 import { Habit } from '../../../utils/types';
 import {
-  HabitFormSchema,
-  HabitData,
+  ModifyHabitData,
+  ModifyHabitSchema,
 } from '../../../utils/validations/habitSchema';
 import Button from '../../ui/Button';
+import useHabits from '../../../hooks/useHabits';
 
 interface FormProps {
   onSuccess: () => void;
@@ -21,16 +20,17 @@ const ModifyHabitForm = ({ onSuccess, onHabitUpdated, habit }: FormProps) => {
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [submitSuccess, setSubmitSuccess] = useState(false);
 
-  const { getToken } = useAuth();
+  const { modifyHabit } = useHabits();
 
   const {
     register,
     handleSubmit,
     formState: { errors },
     reset,
-  } = useForm<HabitData>({
-    resolver: zodResolver(HabitFormSchema),
+  } = useForm<ModifyHabitData>({
+    resolver: zodResolver(ModifyHabitSchema),
     defaultValues: {
+      habitID: habit.habit_id || '',
       name: '',
       description: '',
       goal: undefined,
@@ -40,6 +40,7 @@ const ModifyHabitForm = ({ onSuccess, onHabitUpdated, habit }: FormProps) => {
   useEffect(() => {
     if (habit) {
       reset({
+        habitID: habit.habit_id || '',
         name: habit.name || '',
         description: habit.description || '',
         goal: habit.goal || undefined,
@@ -47,36 +48,21 @@ const ModifyHabitForm = ({ onSuccess, onHabitUpdated, habit }: FormProps) => {
     }
   }, [habit, reset]);
 
-  const onFormSubmit = async (data: HabitData) => {
+  const onFormSubmit = async (data: ModifyHabitData) => {
     setIsSubmitting(true);
     setSubmitError(null);
     setSubmitSuccess(false);
     try {
       if (!habit) throw new Error('Habit not found');
 
-      const token = await getToken();
+      const result = await modifyHabit(data);
 
-      const resp = await api.patch(
-        `/habits?habit=${habit.habit_id}`,
-        {
-          name: data.name,
-          description: data.description,
-          goal: data.goal,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      console.log(resp.data);
-
-      const updatedHabit: Habit = resp.data;
-      onHabitUpdated(updatedHabit);
-
-      setSubmitSuccess(true);
-      reset();
-      onSuccess();
+      if (result.success) {
+        onHabitUpdated(result.updatedHabit);
+        setSubmitSuccess(true);
+        reset();
+        onSuccess();
+      }
     } catch (error) {
       console.error(error);
       setSubmitError(`An error occurred while creating the habit: ${error}`);
@@ -88,6 +74,23 @@ const ModifyHabitForm = ({ onSuccess, onHabitUpdated, habit }: FormProps) => {
   return (
     <form onSubmit={handleSubmit(onFormSubmit)} className='flex flex-col'>
       <div className='flex flex-col gap-2'>
+        <div className='flex flex-col gap-2'>
+          <label htmlFor='habitID' className='hidden'>
+            Monthly Goal
+          </label>
+          <input
+            {...register('habitID')}
+            type='text'
+            id='habitID'
+            className='hidden'
+            defaultValue={habit.habit_id}
+          />
+          {errors.habitID && (
+            <span className='text-red-500 text-sm mt-1'>
+              {errors.habitID.message}
+            </span>
+          )}
+        </div>
         <label htmlFor='name' className='font-montreal text-lg pt-2'>
           Habit Name
         </label>
