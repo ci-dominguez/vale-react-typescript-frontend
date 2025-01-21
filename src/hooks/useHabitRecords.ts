@@ -14,6 +14,71 @@ const useHabitRecords = (
 
   const { getToken } = useAuth();
 
+  const updateHabitRecord = useCallback(
+    async (habitID: string, date: string) => {
+      // Immediately update the record locally
+      setHabitRecords((prevRecords) => {
+        const updatedRecords = prevRecords.map((record) =>
+          record.habit_id === habitID && record.date === date
+            ? { ...record, is_completed: !record.is_completed }
+            : record
+        );
+
+        // Check if record exists, if not add it as a new record
+        const recordExists = updatedRecords.some(
+          (record) => record.habit_id === habitID && record.date === date
+        );
+
+        if (!recordExists) {
+          updatedRecords.push({
+            habit_id: habitID,
+            record_id: Math.random(),
+            date,
+            is_completed: true,
+          });
+        }
+
+        return updatedRecords;
+      });
+
+      try {
+        const token = await getToken();
+
+        const resp = await axios.patch(
+          `/habit-records?habit=${habitID}&date=${date}`,
+          {},
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        // Update record in database
+        setHabitRecords((prevRecords) =>
+          prevRecords.map((record) =>
+            record.habit_id === habitID && record.date === date
+              ? { ...record, is_completed: resp.data.is_completed }
+              : record
+          )
+        );
+      } catch (error) {
+        console.error('Failed to update habit record:', error);
+        setRecordsError(`Failed to update habit record: ${error}`);
+
+        // Revert local changes if database update fails
+        setHabitRecords((prevRecords) =>
+          prevRecords.map((record) =>
+            record.habit_id === habitID && record.date === date
+              ? { ...record, is_completed: !record.is_completed }
+              : record
+          )
+        );
+      }
+    },
+    [getToken]
+  );
+
   const fetchHabitRecords = useCallback(
     async (habitIDs: string[], selectedMonth: number, selectedYear: number) => {
       setAreRecordsLoading(true);
@@ -61,68 +126,6 @@ const useHabitRecords = (
     if (habitIDs.length > 0)
       fetchHabitRecords(habitIDs, selectedMonth, selectedYear);
   }, [fetchHabitRecords, habitIDs, selectedMonth, selectedYear]);
-
-  const updateHabitRecord = async (habitID: string, date: string) => {
-    // Immediately update the record locally
-    setHabitRecords((prevRecords) => {
-      const updatedRecords = prevRecords.map((record) =>
-        record.habit_id === habitID && record.date === date
-          ? { ...record, is_completed: !record.is_completed }
-          : record
-      );
-
-      // Check if record exists, if not add it as a new record
-      const recordExists = updatedRecords.some(
-        (record) => record.habit_id === habitID && record.date === date
-      );
-
-      if (!recordExists) {
-        updatedRecords.push({
-          habit_id: habitID,
-          record_id: Math.random(),
-          date,
-          is_completed: true,
-        });
-      }
-
-      return updatedRecords;
-    });
-
-    try {
-      const token = await getToken();
-
-      const resp = await axios.patch(
-        `/habit-records?habit=${habitID}&date=${date}`,
-        {},
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-
-      // Update record in database
-      setHabitRecords((prevRecords) =>
-        prevRecords.map((record) =>
-          record.habit_id === habitID && record.date === date
-            ? { ...record, is_completed: resp.data.is_completed }
-            : record
-        )
-      );
-    } catch (error) {
-      console.error('Failed to update habit record:', error);
-      setRecordsError(`Failed to update habit record: ${error}`);
-
-      // Revert local changes if database update fails
-      setHabitRecords((prevRecords) =>
-        prevRecords.map((record) =>
-          record.habit_id === habitID && record.date === date
-            ? { ...record, is_completed: !record.is_completed }
-            : record
-        )
-      );
-    }
-  };
 
   return {
     habitRecords,
