@@ -1,11 +1,28 @@
-interface SkeletonProps {
-  daysArray: {
+interface RowSkeletonProps {
+  days: {
     dayNum: number;
     dayOfTheWeek: string;
   }[];
 }
 
-const HabitRowSkeleton = ({ daysArray }: SkeletonProps) => {
+interface RecordSkeletonProps {
+  day: {
+    dayNum: number;
+    dayOfTheWeek: string;
+  };
+}
+
+export const HabitRecordSkeleton = ({ day }: RecordSkeletonProps) => {
+  return (
+    <td key={`record-skeleton-${day.dayNum}`} className='group p-0 border-2'>
+      <div className='flex flex-row w-full justify-center'>
+        <span className='flex animate-pulse bg-charcoal bg-opacity-25 size-4 rounded-sm' />
+      </div>
+    </td>
+  );
+};
+
+const HabitRowSkeleton = ({ days }: RowSkeletonProps) => {
   return (
     <tr className='h-10'>
       <td className='border-2 border-whisper'>
@@ -13,7 +30,7 @@ const HabitRowSkeleton = ({ daysArray }: SkeletonProps) => {
           <span className='flex mx-4 bg-charcoal bg-opacity-75 h-[24px] w-full rounded-sm' />
         </div>
       </td>
-      {daysArray.map((day) => {
+      {days.map((day) => {
         return (
           <td
             key={`record-skeleton-${day.dayNum}`}

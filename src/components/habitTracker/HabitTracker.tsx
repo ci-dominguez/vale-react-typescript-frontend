@@ -9,7 +9,7 @@ import { Check, Plus } from 'lucide-react';
 import EditHabitModal, {
   EditHabitButton,
 } from '../forms/editHabit/EditHabitModal';
-import HabitRowSkeleton from './HabitRowSkeleton';
+import HabitRowSkeleton, { HabitRecordSkeleton } from './HabitRowSkeleton';
 const HabitTracker = () => {
   const [isCreateHabitFormOpen, setIsCreateHabitFormOpen] = useState(false);
   const [isEditHabitModalOpen, setIsEditHabitModalOpen] = useState(false);
@@ -25,7 +25,7 @@ const HabitTracker = () => {
   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
   const daysArray = getDaysInMonth(selectedYear, selectedMonth);
 
-  const { habits, areHabitsLoading, setHabits } = useHabits();
+  const { habits, loadingHabitIDs, areHabitsLoading, setHabits } = useHabits();
   const habitIDs = useMemo(
     () => habits.map((habit) => habit.habit_id),
     [habits]
@@ -140,14 +140,11 @@ const HabitTracker = () => {
             </tr>
           </thead>
           <tbody>
-            {areHabitsLoading || areRecordsLoading ? (
-              <>
-                <HabitRowSkeleton daysArray={daysArray} />
-                <HabitRowSkeleton daysArray={daysArray} />
-                <HabitRowSkeleton daysArray={daysArray} />
-              </>
-            ) : (
-              habits.map((habit) => (
+            {areHabitsLoading && <HabitRowSkeleton days={daysArray} />}
+            {habits.map((habit) =>
+              loadingHabitIDs.has(habit.habit_id) ? (
+                <HabitRowSkeleton days={daysArray} />
+              ) : (
                 <tr key={habit.habit_id}>
                   <td className='group border-2 border-whisper font-montreal hover:bg-whisper/30'>
                     <div className='flex flex-row group-hover:justify-center gap-2'>
@@ -163,6 +160,8 @@ const HabitTracker = () => {
                     </div>
                   </td>
                   {daysArray.map((day) => {
+                    if (areRecordsLoading)
+                      return <HabitRecordSkeleton day={day} />;
                     const recordDate = new Date(
                       selectedYear,
                       selectedMonth,
@@ -209,7 +208,7 @@ const HabitTracker = () => {
                     }
                   </td>
                 </tr>
-              ))
+              )
             )}
 
             <tr>

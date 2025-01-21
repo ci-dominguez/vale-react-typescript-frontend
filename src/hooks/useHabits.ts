@@ -8,18 +8,30 @@ const useHabits = () => {
   const [habits, setHabits] = useState<Habit[]>([]);
   const [habitsError, setHabitsError] = useState<string | null>(null);
   const [areHabitsLoading, setAreHabitsLoading] = useState(false);
+  const [loadingHabitIDs, setLoadingHabitIDs] = useState<Set<string>>(
+    new Set()
+  );
 
   const { getToken } = useAuth();
 
   const deleteHabit = useCallback(
     async (habitID: string): Promise<{ success: boolean; error?: string }> => {
       try {
+        setLoadingHabitIDs((prev) => new Set(prev).add(habitID));
+
         const token = await getToken();
 
         await api.delete(`/habits?habit=${habitID}`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
+        });
+
+        // Update loading habit IDs
+        setLoadingHabitIDs((prev) => {
+          const newSet = new Set(prev);
+          newSet.delete(habitID);
+          return newSet;
         });
 
         return { success: true };
@@ -46,6 +58,8 @@ const useHabits = () => {
       };
 
       try {
+        setLoadingHabitIDs((prev) => new Set(prev).add(data.habitID));
+
         const token = await getToken();
 
         const resp = await api.patch(
@@ -63,6 +77,13 @@ const useHabits = () => {
         );
 
         updatedHabit = resp.data;
+
+        // Update loading habit IDs
+        setLoadingHabitIDs((prev) => {
+          const newSet = new Set(prev);
+          newSet.delete(data.habitID);
+          return newSet;
+        });
 
         return { updatedHabit: updatedHabit, success: true };
       } catch (error) {
@@ -108,6 +129,7 @@ const useHabits = () => {
     modifyHabit,
     habitsError,
     areHabitsLoading,
+    loadingHabitIDs,
   };
 };
 
