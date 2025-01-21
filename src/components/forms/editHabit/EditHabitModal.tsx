@@ -38,9 +38,9 @@ const EditHabitModal = ({
 
   return (
     <div className='fixed inset-0 z-50 flex bg-charcoal  bg-opacity-40 justify-center items-center'>
-      <div className='flex flex-col overflow-y-auto max-h-screen w-[90%] px-4 py-10 gap-6 rounded-xl bg-eggshell'>
+      <div className='flex flex-col overflow-y-auto max-h-screen w-[90%] sm:w-[80%] md:w-[70%] lg:w-[50%] 2xl:w-[30%] px-4 sm:px-10 py-10 sm:py-14 gap-6 rounded-xl bg-eggshell'>
         <button type='button' onClick={onClose} className='mx-auto'>
-          <X className='size-6 stroke-onyx' />
+          <X className='size-8 stroke-onyx bg-charcoal bg-opacity-0 hover:bg-opacity-20 rounded-full p-1' />
         </button>
         <span className='font-editorial text-3xl pt-2 text-center'>
           Modify Habit

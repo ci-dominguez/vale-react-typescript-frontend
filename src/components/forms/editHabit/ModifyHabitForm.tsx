@@ -72,25 +72,28 @@ const ModifyHabitForm = ({ onSuccess, onHabitUpdated, habit }: FormProps) => {
   };
 
   return (
-    <form onSubmit={handleSubmit(onFormSubmit)} className='flex flex-col'>
+    <form
+      onSubmit={handleSubmit(onFormSubmit)}
+      className='flex flex-col gap-6 sm:gap-10'
+    >
       <div className='flex flex-col gap-2'>
-        <div className='flex flex-col gap-2'>
-          <label htmlFor='habitID' className='hidden'>
-            Monthly Goal
-          </label>
-          <input
-            {...register('habitID')}
-            type='text'
-            id='habitID'
-            className='hidden'
-            defaultValue={habit.habit_id}
-          />
-          {errors.habitID && (
-            <span className='text-red-500 text-sm mt-1'>
-              {errors.habitID.message}
-            </span>
-          )}
-        </div>
+        <label htmlFor='habitID' className='hidden'>
+          Monthly Goal
+        </label>
+        <input
+          {...register('habitID')}
+          type='text'
+          id='habitID'
+          className='hidden'
+          defaultValue={habit.habit_id}
+        />
+        {errors.habitID && (
+          <span className='text-red-500 text-sm mt-1'>
+            {errors.habitID.message}
+          </span>
+        )}
+      </div>
+      <div className='flex flex-col gap-2'>
         <label htmlFor='name' className='font-montreal text-lg pt-2'>
           Habit Name
         </label>
