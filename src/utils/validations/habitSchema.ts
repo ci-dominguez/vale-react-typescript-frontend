@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-export const HabitFormSchema = z.object({
+export const CreateHabitSchema = z.object({
   name: z
     .string()
     .min(1, 'A habit needs a name')
@@ -29,7 +29,7 @@ export const DeleteHabitSchema = z.object({
   habitID: z.string().uuid(),
 });
 
-export type HabitData = z.infer<typeof HabitFormSchema>;
+export type CreateHabitData = z.infer<typeof CreateHabitSchema>;
 
 export type ModifyHabitData = z.infer<typeof ModifyHabitSchema>;
 

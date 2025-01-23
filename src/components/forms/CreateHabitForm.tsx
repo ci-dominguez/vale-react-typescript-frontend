@@ -1,16 +1,15 @@
 import { useState } from 'react';
-import { useAuth } from '@clerk/clerk-react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import api from '../../api/axios';
 import { Habit } from '../../utils/types';
 import {
-  HabitFormSchema,
-  HabitData,
+  CreateHabitSchema,
+  CreateHabitData,
 } from '../../utils/validations/habitSchema';
 import { X } from 'lucide-react';
 import Button from '../ui/Button';
 import axios from 'axios';
+import useHabits from '../../hooks/useHabits';
 
 interface CreateHabitFormProps {
   onClose: () => void;
@@ -27,35 +26,30 @@ const CreateHabitForm = ({
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [submitSuccess, setSubmitSuccess] = useState(false);
 
-  const { getToken } = useAuth();
+  const { createHabit } = useHabits();
 
   const {
     register,
     handleSubmit,
     formState: { errors },
     reset,
-  } = useForm<HabitData>({ resolver: zodResolver(HabitFormSchema) });
+  } = useForm<CreateHabitData>({ resolver: zodResolver(CreateHabitSchema) });
 
-  const onFormSubmit = async (data: HabitData) => {
+  const onFormSubmit = async (data: CreateHabitData) => {
     setIsSubmitting(true);
     setSubmitError(null);
     setSubmitSuccess(false);
 
     try {
-      const token = await getToken();
+      if (!data) throw new Error('No data provided');
 
-      const resp = await api.post('/habits', data, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      console.log(resp.data);
+      const result = await createHabit(data);
 
-      const newHabit: Habit = resp.data;
-      onHabitCreated(newHabit);
-
-      setSubmitSuccess(true);
-      reset();
+      if (result.success) {
+        onHabitCreated(result.newHabit);
+        setSubmitSuccess(true);
+        reset();
+      }
     } catch (error: unknown) {
       if (axios.isAxiosError(error)) {
         console.error(error);

@@ -2,7 +2,11 @@ import { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '@clerk/clerk-react';
 import api from '../api/axios';
 import { Habit } from '../utils/types';
-import { ModifyHabitData } from '../utils/validations/habitSchema';
+import {
+  CreateHabitData,
+  ModifyHabitData,
+} from '../utils/validations/habitSchema';
+import axios from 'axios';
 
 const useHabits = () => {
   const [habits, setHabits] = useState<Habit[]>([]);
@@ -98,6 +102,62 @@ const useHabits = () => {
     [getToken]
   );
 
+  const createHabit = useCallback(
+    async (
+      data: CreateHabitData
+    ): Promise<{ newHabit: Habit; success: boolean; error?: string }> => {
+      let newHabit: Habit = {
+        habit_id: '',
+        user_id: '',
+        name: '',
+        description: '',
+        created_at: new Date(),
+        goal: 0,
+        color: '',
+      };
+      try {
+        const token = await getToken();
+
+        const resp = await api.post('/habits', data, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        console.log(resp.data);
+
+        newHabit = resp.data;
+
+        // Update loading habit IDs
+        setLoadingHabitIDs((prev) => {
+          const newSet = new Set(prev);
+          newSet.delete(newHabit.habit_id);
+          return newSet;
+        });
+
+        setHabits((prevHabits) => [...prevHabits, newHabit]);
+
+        return { newHabit, success: true };
+      } catch (error: unknown) {
+        if (axios.isAxiosError(error)) {
+          console.error(error);
+          return {
+            newHabit,
+            success: false,
+            error: `${error.response?.data.error}`,
+          };
+        } else {
+          console.error(error);
+          return {
+            newHabit,
+            success: false,
+            error: `An unexpected error occurred: ${error}`,
+          };
+        }
+      }
+    },
+    [getToken]
+  );
+
   const fetchHabits = useCallback(async () => {
     setAreHabitsLoading(true);
     setHabitsError(null);
@@ -125,6 +185,7 @@ const useHabits = () => {
   return {
     habits,
     setHabits,
+    createHabit,
     deleteHabit,
     modifyHabit,
     habitsError,
