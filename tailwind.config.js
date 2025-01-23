@@ -3,6 +3,13 @@ export default {
   content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
   darkMode: 'class',
   theme: {
+    screens: {
+      sm: '640px',
+      md: '768px',
+      lg: '1020px',
+      xl: '1200px',
+      '2xl': '2500px',
+    },
     extend: {
       fontFamily: {
         editorial: ['editorial'],
@@ -57,24 +64,6 @@ export default {
     'bg-habit-pink',
     'bg-habit-light-pink',
     'bg-habit-rose',
-    'border-habit-purple',
-    'border-habit-green',
-    'border-habit-red',
-    'border-habit-orange',
-    'border-habit-yellow',
-    'border-habit-light-yellow',
-    'border-habit-lime',
-    'border-habit-light-lime',
-    'border-habit-mint',
-    'border-habit-light-mint',
-    'border-habit-teal',
-    'border-habit-light-cyan',
-    'border-habit-indigo',
-    'border-habit-light-indigo',
-    'border-habit-violet',
-    'border-habit-pink',
-    'border-habit-light-pink',
-    'border-habit-rose',
   ],
   plugins: [],
 };
