@@ -209,7 +209,7 @@ const HabitTracker = () => {
                 className='border-x-2 border-white'
               >
                 <button
-                  className='flex items-center gap-2 py-2 w-full text-center group hover:bg-ivory'
+                  className='flex items-center 2xl:justify-center gap-2 py-2 w-full text-center group hover:bg-ivory'
                   onClick={() => setIsCreateHabitFormOpen(true)}
                 >
                   <Plus className='size-6 stroke-off group-hover:stroke-charcoal' />
