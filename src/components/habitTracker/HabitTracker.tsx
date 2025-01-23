@@ -77,20 +77,20 @@ const HabitTracker = () => {
         setSelectedYear={setSelectedYear}
       />
       <div className='overflow-x-none overflow-y-hidden w-full'>
-        <table className='min-w-full table-fixed border-2 border-whisper'>
+        <table className='min-w-full table-fixed border-[1px] border-whisper'>
           <colgroup>
-            <col className='w-20' />
+            <col className='w-20 sm:w-40 xl:w-52' />
             {daysArray.map((_, index) => (
               <col key={`col-${index}`} className='w-4' />
             ))}
-            <col className='w-12' />
+            <col className='w-10' />
             <col className='w-8' />
           </colgroup>
 
           <thead>
             <tr>
               <th
-                className='border-2 border-whisper text-center align-middle whitespace-nowrap text-2xl px-4 font-editorial font-normal'
+                className='border-[1px] border-whisper text-center align-middle whitespace-nowrap text-2xl px-4 font-editorial font-normal'
                 rowSpan={2}
               >
                 Habits
@@ -99,7 +99,7 @@ const HabitTracker = () => {
               {daysArray.map((day) => (
                 <th
                   key={`weekday-${day.dayNum}`}
-                  className={`border-2 border-whisper text-center align-middle whitespace-nowrap p-1 min-w-[35px] font-montreal font-normal ${
+                  className={`border-[1px] border-whisper text-center align-middle whitespace-nowrap p-1 font-montreal font-normal ${
                     day.dayNum === currentDate.day &&
                     selectedMonth === currentDate.month - 1 &&
                     selectedYear === currentDate.year &&
@@ -110,13 +110,13 @@ const HabitTracker = () => {
                 </th>
               ))}
               <th
-                className='border-2 border-whisper text-center align-middle whitespace-nowrap text-2xl px-4 font-editorial font-normal'
+                className='border-[1px] border-whisper text-center align-middle whitespace-nowrap text-2xl px-4 font-editorial font-normal'
                 rowSpan={2}
               >
                 Goal
               </th>
               <th
-                className='border-2 border-whisper text-center align-middle whitespace-nowrap text-2xl px-4 font-editorial font-normal'
+                className='border-[1px] border-whisper text-center align-middle whitespace-nowrap text-2xl px-4 font-editorial font-normal'
                 rowSpan={2}
               >
                 Achieved
@@ -127,7 +127,7 @@ const HabitTracker = () => {
               {daysArray.map((day) => (
                 <th
                   key={`day-${day.dayNum}`}
-                  className={`border-2 border-whisper text-center align-middle whitespace-nowrap py-5 font-montreal font-normal ${
+                  className={`border-[1px] border-whisper text-center align-middle whitespace-nowrap py-5 font-montreal font-normal ${
                     day.dayNum === currentDate.day &&
                     selectedMonth === currentDate.month - 1 &&
                     selectedYear === currentDate.year &&
@@ -145,10 +145,10 @@ const HabitTracker = () => {
               loadingHabitIDs.has(habit.habit_id) ? (
                 <HabitRowSkeleton days={daysArray} />
               ) : (
-                <tr key={habit.habit_id}>
-                  <td className='group border-2 border-whisper font-montreal hover:bg-whisper/30'>
+                <tr key={habit.habit_id} className='h-10'>
+                  <td className='group border-[1px] min-h-10 border-whisper font-montreal hover:bg-whisper/30'>
                     <div className='flex flex-row group-hover:justify-center gap-2'>
-                      <span className='flex group-hover:hidden px-4'>
+                      <span className='flex group-hover:hidden px-4 mx-auto text-center'>
                         {habit.name}
                       </span>
                       <EditHabitButton
@@ -173,33 +173,25 @@ const HabitTracker = () => {
                     return (
                       <td
                         key={`record-${habit.habit_id}-${day.dayNum}`}
-                        className={`group p-0 border-2 ${
+                        className={`border-[1px] min-w-10 min-h-10 aspect-square hover:cursor-pointer transition-colors duration-100 ${
                           isRecordCompleted(habit.habit_id, recordDate)
-                            ? `border-habit-${habit.color} bg-habit-${habit.color}`
+                            ? `bg-habit-${habit.color}`
                             : 'border-whisper bg-white hover:bg-ivory'
                         }`}
+                        onClick={() => {
+                          updateHabitRecord(habit.habit_id, recordDate);
+                        }}
                       >
-                        <button
-                          onClick={() => {
-                            updateHabitRecord(habit.habit_id, recordDate);
-                          }}
-                          className={`size-[35px] xl:size-full xl:min-h-[35px] flex items-center justify-center ${
-                            isRecordCompleted(habit.habit_id, recordDate)
-                              ? `bg-habit-${habit.color}`
-                              : 'bg-white group-hover:bg-ivory'
-                          }`}
-                        >
-                          {isRecordCompleted(habit.habit_id, recordDate) ? (
-                            <Check className='size-5 stroke-charcoal group-hover:size-6' />
-                          ) : null}
-                        </button>
+                        {isRecordCompleted(habit.habit_id, recordDate) ? (
+                          <Check className='size-4 stroke-charcoal mx-auto' />
+                        ) : null}
                       </td>
                     );
                   })}
-                  <td className='border-2 border-whisper text-center'>
+                  <td className='border-[1px] border-whisper text-center'>
                     {habit.goal}
                   </td>
-                  <td className='border-2 border-whisper text-center'>
+                  <td className='border-[1px] border-whisper text-center'>
                     {
                       habitRecords.filter(
                         (rec) =>
