@@ -143,9 +143,12 @@ const HabitTracker = () => {
             {areHabitsLoading && <HabitRowSkeleton days={daysArray} />}
             {habits.map((habit) =>
               loadingHabitIDs.has(habit.habit_id) ? (
-                <HabitRowSkeleton days={daysArray} />
+                <HabitRowSkeleton days={daysArray} key={Math.random()} />
               ) : (
-                <tr key={habit.habit_id} className='h-10'>
+                <tr
+                  key={areHabitsLoading ? Math.random() : habit.habit_id}
+                  className='h-10'
+                >
                   <td className='group border-[1px] min-h-10 border-whisper font-montreal hover:bg-whisper/30'>
                     <div className='flex flex-row group-hover:justify-center gap-2'>
                       <span className='flex group-hover:hidden px-4 mx-auto text-center'>
@@ -161,7 +164,9 @@ const HabitTracker = () => {
                   </td>
                   {daysArray.map((day) => {
                     if (areRecordsLoading)
-                      return <HabitRecordSkeleton day={day} />;
+                      return (
+                        <HabitRecordSkeleton day={day} key={Math.random()} />
+                      );
                     const recordDate = new Date(
                       selectedYear,
                       selectedMonth,
