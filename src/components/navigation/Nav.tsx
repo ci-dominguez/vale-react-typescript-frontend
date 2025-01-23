@@ -12,7 +12,7 @@ const Nav = () => {
   const route = location.pathname;
 
   return (
-    <nav className='flex flex-col p-4 md:p-6 lg:py-10 lg:px-10 xl:px-20 2xl:px-52 bg-white text-charcoal min-h-[84px]'>
+    <nav className='flex flex-col p-4 md:p-6 lg:py-10 lg:px-10 xl:px-20 3xl:px-52 bg-white text-charcoal min-h-[84px]'>
       <div className='flex items-center justify-between min-h-[52px]'>
         <div className='flex items-center gap-4'>
           <Link to='/' className='flex gap-2 items-center'>
