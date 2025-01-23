@@ -140,10 +140,16 @@ const HabitTracker = () => {
             </tr>
           </thead>
           <tbody>
-            {areHabitsLoading && <HabitRowSkeleton days={daysArray} />}
+            {areHabitsLoading && (
+              <>
+                <HabitRowSkeleton days={daysArray} />
+                <HabitRowSkeleton days={daysArray} />
+                <HabitRowSkeleton days={daysArray} />
+              </>
+            )}
             {habits.map((habit) =>
               loadingHabitIDs.has(habit.habit_id) ? (
-                <HabitRowSkeleton days={daysArray} key={Math.random()} />
+                <HabitRowSkeleton days={daysArray} />
               ) : (
                 <tr
                   key={areHabitsLoading ? Math.random() : habit.habit_id}
