@@ -8,7 +8,8 @@ export default {
       md: '768px',
       lg: '1020px',
       xl: '1200px',
-      '2xl': '2500px',
+      '2xl': '1720px',
+      '3xl': '2500px',
     },
     extend: {
       fontFamily: {
