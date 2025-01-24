@@ -26,7 +26,7 @@ export const links = [
     ],
   },
   {
-    name: 'About Vale',
+    name: 'About',
     links: [
       {
         to: 'https://cidominguez.com',
