@@ -1,6 +1,7 @@
 import { SignedIn, SignedOut } from '@clerk/clerk-react';
 import { useState } from 'react';
 import { Link, useLocation } from 'react-router';
+import { links } from '../../utils/links';
 import Logo from '../ui/Icons';
 import { MenuIcon, X } from 'lucide-react';
 import Button from '../ui/Button';
@@ -14,19 +15,37 @@ const Nav = () => {
   return (
     <nav className='flex flex-col p-4 md:p-6 lg:py-10 lg:px-10 xl:px-20 3xl:px-52 bg-white text-charcoal min-h-[84px]'>
       <div className='flex items-center justify-between min-h-[52px]'>
-        <div className='flex items-center gap-4'>
+        <div className='flex items-center gap-10'>
           <Link to='/' className='flex gap-2 items-center'>
             <Logo className='fill-seafoam size-9' />
             <span className='font-editorial text-3xl pt-2'>Vale</span>
           </Link>
 
           <Link
-            to='/habit-tracker'
-            className={`hidden md:flex text-xl font-editorial pt-2 hover:underline ${
-              route === '/habit-tracker' && 'underline'
+            to={links[0].links[1].to}
+            className={`hidden md:flex text-xl font-montreal hover:text-seafoam transition-colors duration-200 ${
+              route === links[0].links[1].to && 'text-seafoam'
             }`}
           >
-            Habit Tracker
+            {links[0].links[1].text}
+          </Link>
+
+          <Link
+            to={links[1].links[0].to}
+            className={`hidden md:flex text-xl font-montreal hover:text-seafoam transition-colors duration-200 ${
+              route === links[1].links[0].to && 'text-seafoam'
+            }`}
+          >
+            {links[1].links[0].text}
+          </Link>
+
+          <Link
+            to={links[1].links[1].to}
+            className={`hidden md:flex text-xl font-montreal hover:text-seafoam transition-colors duration-200 ${
+              route === links[1].links[1].to && 'text-seafoam'
+            }`}
+          >
+            {links[1].links[1].text}
           </Link>
         </div>
         {/* Tablet & desktop nav menu */}
@@ -100,12 +119,30 @@ const Nav = () => {
           </SignedOut>
           <SignedIn>
             <Link
-              to='/habit-tracker'
-              className={`text-2xl font-editorial ${
-                route === '/habit-tracker' && 'underline'
+              to={links[0].links[1].to}
+              className={`text-xl font-montreal hover:text-seafoam transition-colors duration-200 ${
+                route === links[0].links[1].to && 'text-seafoam'
               }`}
             >
-              Habit Tracker
+              {links[0].links[1].text}
+            </Link>
+
+            <Link
+              to={links[1].links[0].to}
+              className={`text-xl font-montreal hover:text-seafoam transition-colors duration-200 ${
+                route === links[1].links[0].to && 'text-seafoam'
+              }`}
+            >
+              {links[1].links[0].text}
+            </Link>
+
+            <Link
+              to={links[1].links[1].to}
+              className={`text-xl font-montreal hover:text-seafoam transition-colors duration-200 ${
+                route === links[1].links[1].to && 'text-seafoam'
+              }`}
+            >
+              {links[1].links[1].text}
             </Link>
             <Button variant='primary'>
               <Link to='/upgrade' className='w-full py-3'>
