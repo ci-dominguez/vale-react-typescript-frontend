@@ -1,6 +1,11 @@
 interface ButtonProps {
   children: React.ReactNode;
-  variant: 'primary' | 'secondary' | 'destructive' | 'destructive-outline';
+  variant:
+    | 'primary'
+    | 'secondary'
+    | 'destructive'
+    | 'destructive-outline'
+    | 'alt';
   type?: 'button' | 'submit';
   onClick?: () => void;
 }
@@ -15,6 +20,7 @@ const Button = ({
 
   const variantStylesMap: Record<string, string> = {
     primary: 'bg-charcoal text-white hover:bg-[#191919]',
+    alt: 'bg-seafoam text-charcoal hover:bg-[#D1ECC3]',
     secondary: 'bg-parchment text-charcoal',
     destructive: 'bg-red-600 text-white hover:bg-red-700',
     'destructive-outline':
