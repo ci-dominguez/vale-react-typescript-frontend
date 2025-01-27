@@ -145,7 +145,7 @@ const Nav = () => {
               {links[1].links[1].text}
             </Link>
             <Button variant='primary'>
-              <Link to='/upgrade' className='w-full py-3'>
+              <Link to='/pricing' className='w-full py-3'>
                 Join Max
               </Link>
             </Button>
