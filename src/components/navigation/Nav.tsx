@@ -23,7 +23,7 @@ const Nav = () => {
 
           <Link
             to={links[0].links[1].to}
-            className={`hidden md:flex text-xl font-montreal hover:text-seafoam transition-colors duration-200 ${
+            className={`hidden lg:flex text-xl font-montreal hover:text-seafoam transition-colors duration-200 ${
               route === links[0].links[1].to && 'text-seafoam'
             }`}
           >
@@ -32,7 +32,7 @@ const Nav = () => {
 
           <Link
             to={links[1].links[0].to}
-            className={`hidden md:flex text-xl font-montreal hover:text-seafoam transition-colors duration-200 ${
+            className={`hidden lg:flex text-xl font-montreal hover:text-seafoam transition-colors duration-200 ${
               route === links[1].links[0].to && 'text-seafoam'
             }`}
           >
@@ -41,7 +41,7 @@ const Nav = () => {
 
           <Link
             to={links[1].links[1].to}
-            className={`hidden md:flex text-xl font-montreal hover:text-seafoam transition-colors duration-200 ${
+            className={`hidden lg:flex text-xl font-montreal hover:text-seafoam transition-colors duration-200 ${
               route === links[1].links[1].to && 'text-seafoam'
             }`}
           >
@@ -49,7 +49,7 @@ const Nav = () => {
           </Link>
         </div>
         {/* Tablet & desktop nav menu */}
-        <div className='hidden md:flex items-center gap-5'>
+        <div className='hidden lg:flex items-center gap-5'>
           <SignedOut>
             <Link
               to='/sign-in'
@@ -68,7 +68,7 @@ const Nav = () => {
           </SignedOut>
           <SignedIn>
             <Button variant='primary'>
-              <Link to='/Pricing' className='w-full py-3 px-10'>
+              <Link to='/pricing' className='w-full py-3 px-10'>
                 Join Max
               </Link>
             </Button>
@@ -83,7 +83,7 @@ const Nav = () => {
           onClick={() => {
             setIsOpen(!isOpen);
           }}
-          className='md:hidden'
+          className='lg:hidden'
         >
           {isOpen ? (
             <X className='stroke-charcoal size-8' />
@@ -95,7 +95,7 @@ const Nav = () => {
 
       {/* Mobile nav menu */}
       {isOpen && (
-        <div className='flex flex-col md:hidden border-[1px] rounded-lg border-whisper bg-ivory text-center p-10 mt-8 gap-4'>
+        <div className='flex flex-col lg:hidden border-[1px] rounded-lg border-whisper bg-ivory text-center p-10 mt-8 gap-4'>
           <SignedOut>
             <Link
               to='/sign-in'
