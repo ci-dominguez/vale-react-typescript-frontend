@@ -21,34 +21,55 @@ const Nav = () => {
             <span className='font-editorial text-3xl pt-2'>Vale</span>
           </Link>
 
-          <Link
-            to={links[0].links[1].to}
-            className={`hidden lg:flex text-xl font-montreal hover:text-seafoam transition-colors duration-200 ${
-              route === links[0].links[1].to && 'text-seafoam'
-            }`}
-          >
-            {links[0].links[1].text}
-          </Link>
+          <SignedIn>
+            <Link
+              to={links[0].links[1].to}
+              className={`hidden lg:flex text-xl font-montreal hover:text-seafoam transition-colors duration-200 ${
+                route === links[0].links[1].to && 'text-seafoam'
+              }`}
+            >
+              {links[0].links[1].text}
+            </Link>
 
-          <Link
-            to={links[1].links[0].to}
-            className={`hidden lg:flex text-xl font-montreal hover:text-seafoam transition-colors duration-200 ${
-              route === links[1].links[0].to && 'text-seafoam'
-            }`}
-          >
-            {links[1].links[0].text}
-          </Link>
+            <Link
+              to={links[1].links[0].to}
+              className={`hidden lg:flex text-xl font-montreal hover:text-seafoam transition-colors duration-200 ${
+                route === links[1].links[0].to && 'text-seafoam'
+              }`}
+            >
+              {links[1].links[0].text}
+            </Link>
 
-          <Link
-            to={links[1].links[1].to}
-            className={`hidden lg:flex text-xl font-montreal hover:text-seafoam transition-colors duration-200 ${
-              route === links[1].links[1].to && 'text-seafoam'
-            }`}
-          >
-            {links[1].links[1].text}
-          </Link>
+            <Link
+              to={links[1].links[1].to}
+              className={`hidden lg:flex text-xl font-montreal hover:text-seafoam transition-colors duration-200 ${
+                route === links[1].links[1].to && 'text-seafoam'
+              }`}
+            >
+              {links[1].links[1].text}
+            </Link>
+          </SignedIn>
+          <SignedOut>
+            <Link
+              to={links[0].links[1].to}
+              className={`hidden lg:flex text-xl font-montreal hover:text-seafoam transition-colors duration-200 ${
+                route === links[0].links[1].to && 'text-seafoam'
+              }`}
+            >
+              {links[0].links[1].text}
+            </Link>
+
+            <Link
+              to={links[1].links[0].to}
+              className={`hidden lg:flex text-xl font-montreal hover:text-seafoam transition-colors duration-200 ${
+                route === links[1].links[0].to && 'text-seafoam'
+              }`}
+            >
+              {links[1].links[0].text}
+            </Link>
+          </SignedOut>
         </div>
-        {/* Tablet & desktop nav menu */}
+
         <div className='hidden lg:flex items-center gap-5'>
           <SignedOut>
             <Link
@@ -98,18 +119,23 @@ const Nav = () => {
         <div className='flex flex-col lg:hidden border-[1px] rounded-lg border-whisper bg-ivory text-center p-10 mt-8 gap-4'>
           <SignedOut>
             <Link
-              to='/sign-in'
-              className={`text-2xl font-editorial ${
-                route === '/sign-in' && 'underline'
+              to={links[1].links[0].to}
+              className={`text-xl font-montreal hover:text-seafoam transition-colors duration-200 ${
+                route === links[1].links[0].to && 'text-seafoam'
               }`}
             >
-              Sign In
+              {links[1].links[0].text}
+            </Link>
+            <Link
+              to='/sign-in'
+              className={`text-xl font-montreal hover:text-seafoam transition-colors duration-200 ${
+                route === '/sign-in' && 'text-seafoam'
+              }`}
+            >
+              Sign in
             </Link>
             <Button variant='primary'>
-              <Link
-                to='/sign-up'
-                className={`w-full py-3 ${route === '/sign-up' && 'underline'}`}
-              >
+              <Link to='/sign-up' className='w-full py-3'>
                 Get Started
               </Link>
             </Button>
