@@ -58,7 +58,10 @@ const HomePage = () => {
             <div className='flex flex-col sm:flex-row gap-4 mt-14'>
               {spotlight.map((item) => {
                 return (
-                  <div className='flex flex-col gap-2 text-left bg-eggshell p-10 rounded-md sm:w-1/2 max-w-96'>
+                  <div
+                    key={item.title}
+                    className='flex flex-col gap-2 text-left bg-eggshell p-10 rounded-md sm:w-1/2 max-w-96'
+                  >
                     <h3 className='font-editorial text-2xl flex flex-col items-center gap-2'>
                       {item.icon}
                       <span className='text-center'>{item.title}</span>
