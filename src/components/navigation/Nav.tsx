@@ -39,15 +39,6 @@ const Nav = () => {
             >
               {links[1].links[0].text}
             </Link>
-
-            <Link
-              to={links[1].links[1].to}
-              className={`hidden lg:flex text-xl font-montreal hover:text-seafoam transition-colors duration-200 ${
-                route === links[1].links[1].to && 'text-seafoam'
-              }`}
-            >
-              {links[1].links[1].text}
-            </Link>
           </SignedIn>
           <SignedOut>
             <Link
@@ -164,15 +155,6 @@ const Nav = () => {
               }`}
             >
               {links[1].links[0].text}
-            </Link>
-
-            <Link
-              to={links[1].links[1].to}
-              className={`text-xl font-montreal hover:text-seafoam transition-colors duration-200 ${
-                route === links[1].links[1].to && 'text-seafoam'
-              }`}
-            >
-              {links[1].links[1].text}
             </Link>
             <Button variant='primary'>
               <Link to='/pricing' className='w-full py-3'>

@@ -19,10 +19,6 @@ export const links = [
         to: '/pricing',
         text: 'Pricing',
       },
-      {
-        to: '/account',
-        text: 'Account',
-      },
     ],
   },
   {
