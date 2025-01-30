@@ -1,4 +1,4 @@
-import { SignedIn, SignedOut } from '@clerk/clerk-react';
+import { SignedIn, SignedOut, UserButton } from '@clerk/clerk-react';
 import { useState } from 'react';
 import { Link, useLocation } from 'react-router';
 import { links } from '../../utils/links';
@@ -94,9 +94,13 @@ const Nav = () => {
               </Link>
             </Button>
             <ThemeToggle />
-            <Link to='/account'>
-              <div className='bg-seafoam size-[46px] rounded-full hover:bg-seafoam/80' />
-            </Link>
+            <UserButton
+              appearance={{
+                elements: {
+                  userButtonAvatarBox: 'w-[46px] h-[46px]',
+                },
+              }}
+            />
           </SignedIn>
         </div>
 
@@ -177,9 +181,13 @@ const Nav = () => {
             </Button>
             <div className='flex gap-4 mx-auto'>
               <ThemeToggle />
-              <Link to='/account'>
-                <div className='bg-seafoam size-[46px] rounded-full' />
-              </Link>
+              <UserButton
+                appearance={{
+                  elements: {
+                    userButtonAvatarBox: 'w-[46px] h-[46px]',
+                  },
+                }}
+              />
             </div>
           </SignedIn>
         </div>
