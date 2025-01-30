@@ -5,7 +5,7 @@ import { links } from '../../utils/links';
 import Logo from '../ui/Icons';
 import { MenuIcon, X } from 'lucide-react';
 import Button from '../ui/Button';
-import ThemeToggle from '../ui/ThemeToggle';
+// import ThemeToggle from '../ui/ThemeToggle';
 
 const Nav = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -76,7 +76,7 @@ const Nav = () => {
                 Get Started
               </Link>
             </Button>
-            <ThemeToggle />
+            {/* <ThemeToggle /> */}
           </SignedOut>
           <SignedIn>
             <Button variant='primary'>
@@ -84,7 +84,7 @@ const Nav = () => {
                 Join Max
               </Link>
             </Button>
-            <ThemeToggle />
+            {/* <ThemeToggle /> */}
             <UserButton
               appearance={{
                 elements: {
@@ -134,9 +134,7 @@ const Nav = () => {
                 Get Started
               </Link>
             </Button>
-            <div className='flex mx-auto'>
-              <ThemeToggle />
-            </div>
+            <div className='flex mx-auto'>{/* <ThemeToggle /> */}</div>
           </SignedOut>
           <SignedIn>
             <Link
@@ -162,7 +160,7 @@ const Nav = () => {
               </Link>
             </Button>
             <div className='flex gap-4 mx-auto'>
-              <ThemeToggle />
+              {/* <ThemeToggle /> */}
               <UserButton
                 appearance={{
                   elements: {
