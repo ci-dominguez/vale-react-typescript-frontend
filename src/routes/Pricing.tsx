@@ -47,7 +47,7 @@ const PricingPage = () => {
           {tiers.map((tier) => {
             return (
               <div
-                className={`flex flex-col rounded-md p-10 gap-4 ${
+                className={`flex flex-col rounded-md p-10 gap-4 lg:min-w-96 ${
                   tier.price === 0 ? 'bg-eggshell' : 'bg-[#191919] text-white'
                 }`}
                 key={tier.title}
