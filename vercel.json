@@ -1,0 +1,7 @@
+{
+  "rewrites": [
+    { "source": "/sign-in/:path*", "destination": "/" },
+    { "source": "/sign-up/:path*", "destination": "/" },
+    { "source": "/:path*", "destination": "/" }
+  ]
+}
