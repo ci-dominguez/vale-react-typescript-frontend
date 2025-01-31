@@ -91,7 +91,7 @@ const PricingPage = () => {
                   <Link
                     to={
                       isSignedIn
-                        ? `https://buy.stripe.com/test_cN2cQReTCgU6cN2000?client_reference_id=${userId}`
+                        ? `https://buy.stripe.com/7sI9E0f4FaZ3g0geUU?client_reference_id=${userId}`
                         : '/sign-up'
                     }
                     className='w-full py-3 px-10'
