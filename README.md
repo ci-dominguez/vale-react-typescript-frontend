@@ -1,50 +1,27 @@
-# React + TypeScript + Vite
+# Vale: Modern Habit Tracking Platform
+Link to backend: [https://github.com/ci-dominguez/vale-golang-fiber-rest-api](https://github.com/ci-dominguez/vale-golang-fiber-rest-api)
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## 🛠️ Built With
 
-Currently, two official plugins are available:
+- [React](https://react.dev/)
+- [TypeScript](https://www.typescriptlang.org/)
+- [Vite](https://vitejs.dev/)
+- [Tailwind CSS](https://tailwindcss.com/)
+- [Fiber](https://gofiber.io/)
+- [Go](https://go.dev/)
+- [PostgreSQL](https://www.postgresql.org/)
+- [Clerk](https://clerk.com/)
+- [Stripe](https://stripe.com/)
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## 📋 Description
 
-## Expanding the ESLint configuration
+Vale is a modern habit-tracking platform combining a React frontend with a high-performance Fiber backend. Designed for seamless user experience and developer efficiency, it offers:
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+- 🔐 Secure user authentication with Clerk
+- 💳 Subscription management via Stripe
+- 📈 Habit progress visualization
+- 🔔 Custom reminder system
+- 📱 Responsive mobile-first design
+- 🔄 Real-time data synchronization
 
-- Configure the top-level `parserOptions` property like this:
-
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
-```
-
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
-
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react'
-
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-})
-```
+The architecture leverages PostgreSQL for relational data storage and implements best practices for maintainability and scalability.
